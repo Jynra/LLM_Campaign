@@ -14,7 +14,7 @@ Ce projet est une application web pour jouer à des jeux de rôle avec un modèl
 ## Structure du projet
 
 ```
-roleplay-llm-site/
+LLM_Campaign/
 ├── public/               # Fichiers statiques servis par le serveur Python
 │   ├── index.html        # Page principale
 │   ├── css/              # Feuilles de style
@@ -36,8 +36,8 @@ roleplay-llm-site/
 1. Assurez-vous que Docker est installé sur votre machine
 2. Clonez ce dépôt :
    ```
-   git clone https://github.com/votre-nom/roleplay-llm-site.git
-   cd roleplay-llm-site
+   git clone https://github.com/votre-nom/LLM_Campaign.git
+   cd LLM_Campaign
    ```
 3. Rendez le script d'installation exécutable :
    ```
