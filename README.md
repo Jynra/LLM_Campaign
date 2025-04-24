@@ -2,7 +2,7 @@
 
 Cette application web permet de jouer à des jeux de rôle où un modèle de langage (LLM) tient le rôle du Maître du Jeu. Elle utilise une interface web alimentée par un serveur Python qui fait office de proxy vers des services LLM comme Ollama.
 
-![Roleplay avec IA](https://via.placeholder.com/800x400?text=Roleplay+avec+IA)
+<!-- ![Roleplay avec IA](https://via.placeholder.com/800x400?text=Roleplay+avec+IA) -->
 
 ## Fonctionnalités
 
