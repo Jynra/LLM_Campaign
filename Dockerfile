@@ -1,7 +1,7 @@
 FROM python:3-alpine
 
 # Créer un répertoire pour l'application
-WORKDIR /roleplay_site
+WORKDIR /LLM_Campaign
 
 # Copier tous les fichiers de l'application
 COPY public/index.html .
@@ -11,8 +11,8 @@ COPY public/js/ ./js/
 # Ajouter le script de proxy pour Ollama
 COPY proxy.py .
 
-# Exposer le port 9428
-EXPOSE 9428
+# Exposer le port 9425
+EXPOSE 9425
 
 # Installer les dépendances Python pour le proxy
 RUN pip install --no-cache-dir requests
