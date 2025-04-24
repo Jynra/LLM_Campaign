@@ -1,68 +1,83 @@
-# Site de Jeu de Rôle avec Ollama
+# LLM Campaign - Application de Jeu de Rôle avec IA
 
-Ce projet est une application web pour jouer à des jeux de rôle avec un modèle de langage (LLM) comme Maître du Jeu. Cette version utilise un serveur HTTP Python simple qui fait également office de proxy vers Ollama.
+Cette application web permet de jouer à des jeux de rôle où un modèle de langage (LLM) tient le rôle du Maître du Jeu. Elle utilise une interface web alimentée par un serveur Python qui fait office de proxy vers des services LLM comme Ollama.
 
-## Caractéristiques principales
+![Roleplay avec IA](https://via.placeholder.com/800x400?text=Roleplay+avec+IA)
 
-- Interface de chat interactive pour jouer à des jeux de rôle
-- Communication avec Ollama pour générer les réponses du Maître du Jeu
-- Système de jets de dés intégré
-- Stockage local des conversations pour ne pas perdre vos parties
-- Mode hors ligne avec réponses prédéfinies si Ollama n'est pas disponible
-- Responsive design pour utilisation sur ordinateur, tablette ou mobile
+## Fonctionnalités
 
-## Structure du projet
+✨ **Interface immersive** - Chat interactif pour des aventures narratives captivantes  
+🎲 **Système de dés intégré** - Lancez des dés virtuels pour résoudre les actions  
+🤖 **IA comme Maître du Jeu** - Utilise Ollama pour générer des réponses contextuelles  
+💾 **Sauvegarde locale** - Conservation des parties entre les sessions  
+📱 **Design adaptatif** - Fonctionne sur ordinateur, tablette ou smartphone  
+🌐 **Mode hors-ligne** - Réponses de démonstration si Ollama n'est pas disponible
+
+## Architecture du projet
 
 ```
 LLM_Campaign/
-├── public/               # Fichiers statiques servis par le serveur Python
+├── public/               # Fichiers statiques pour l'interface web
 │   ├── index.html        # Page principale
-│   ├── css/              # Feuilles de style
-│   │   └── styles.css    # Styles CSS
+│   ├── css/              # Styles CSS
+│   │   └── styles.css    # Feuille de style principale
 │   └── js/               # Scripts JavaScript
 │       ├── config.js     # Configuration globale
-│       ├── models.js     # Classes de données
+│       ├── models.js     # Modèles de données
 │       ├── api.js        # Communication avec Ollama
-│       ├── chat.js       # Gestion du chat
+│       ├── chat.js       # Gestion des conversations
 │       ├── ui.js         # Interface utilisateur
 │       └── main.js       # Point d'entrée
-├── Dockerfile            # Configuration Docker pour Python
-├── proxy.py              # Serveur Python avec proxy vers Ollama
-└── docker_install.sh     # Script d'installation
+├── proxy.py              # Serveur HTTP Python avec proxy vers Ollama
+├── Dockerfile            # Configuration pour l'image Docker
+└── docker_install.sh     # Script d'installation automatisée
 ```
 
-## Installation avec Docker
+## Configuration requise
 
-1. Assurez-vous que Docker est installé sur votre machine
-2. Clonez ce dépôt :
-   ```
+- Docker (pour l'installation avec conteneur)
+- OU Python 3.x (pour l'installation locale)
+- Instance Ollama fonctionnelle (optionnel, mode démo disponible)
+
+## Installation et démarrage
+
+### Avec Docker (recommandé)
+
+1. Clonez le dépôt et accédez au répertoire du projet :
+   ```bash
    git clone https://github.com/votre-nom/LLM_Campaign.git
    cd LLM_Campaign
    ```
-3. Rendez le script d'installation exécutable :
-   ```
+
+2. Rendez le script d'installation exécutable :
+   ```bash
    chmod +x docker_install.sh
    ```
-4. Lancez le script d'installation :
-   ```
+
+3. Exécutez le script d'installation :
+   ```bash
    ./docker_install.sh
    ```
-5. Accédez à l'application dans votre navigateur :
+
+4. Accédez à l'application dans votre navigateur :
    ```
    http://localhost:9425
    ```
 
-## Installation sans Docker (développement local)
+### Sans Docker (développement local)
 
-1. Assurez-vous que Python 3 est installé sur votre machine
-2. Installez les dépendances Python :
-   ```
+1. Assurez-vous que Python 3 est installé
+
+2. Installez les dépendances requises :
+   ```bash
    pip install requests
    ```
+
 3. Lancez le serveur Python :
-   ```
+   ```bash
    python proxy.py
    ```
+
 4. Accédez à l'application dans votre navigateur :
    ```
    http://localhost:9425
@@ -71,56 +86,79 @@ LLM_Campaign/
 ## Configuration d'Ollama
 
 ### Prérequis
-- Ollama doit être installé et en cours d'exécution sur votre machine ou dans un conteneur Docker accessible
-- Un modèle de langage (par défaut "mistral") doit être téléchargé dans Ollama
+- Ollama installé et en cours d'exécution
+- Au moins un modèle de langage téléchargé dans Ollama (ex: gemma3:4b, mistral, etc.)
 
-### Où doit s'exécuter Ollama
-Cette application est configurée pour accéder à Ollama via l'URL `http://host.docker.internal:11434` depuis le conteneur Docker. Cela signifie qu'Ollama doit être exécuté :
-- Sur votre machine locale (l'hôte Docker) au port 11434 (port par défaut)
-- OU dans un autre conteneur Docker accessible via réseau
+### Configuration réseau
+Par défaut, l'application est configurée pour se connecter à Ollama à l'adresse `http://172.17.0.8:11434`. 
 
-Si Ollama s'exécute ailleurs, vous devrez modifier l'URL dans le fichier `proxy.py`.
+Si votre instance Ollama se trouve ailleurs :
+1. Modifiez la variable `OLLAMA_URL` dans le fichier `proxy.py`
+2. Redémarrez le serveur
 
-### Modèles Ollama supportés
-Tous les modèles disponibles dans votre instance Ollama sont supportés. Vous pouvez sélectionner le modèle à utiliser directement dans l'interface utilisateur.
+## Utilisation de l'application
 
-## Utilisation
-
-1. Lancez votre instance Ollama (si ce n'est pas déjà fait)
-2. Démarrez l'application avec Docker ou en lançant `proxy.py`
-3. Sélectionnez un personnage en cliquant sur son nom dans la barre latérale
-4. Commencez à jouer en envoyant des messages dans le chat
-5. Utilisez le bouton de dés pour lancer des jets de dés quand nécessaire
-
-## Mode hors ligne
-
-Si Ollama n'est pas disponible, l'application passe automatiquement en mode démo avec des réponses prédéfinies. Cela vous permet de tester l'interface sans avoir Ollama installé.
+1. **Démarrage** : Une fenêtre de bienvenue vous explique le fonctionnement de base
+2. **Sélection du personnage** : Cliquez sur un nom dans la barre latérale
+3. **Sélection du modèle** : Choisissez un modèle Ollama dans le menu déroulant
+4. **Interaction** : Écrivez vos actions dans la zone de texte et utilisez les boutons :
+   - 🎲 Pour lancer des dés
+   - 🗺️ Pour afficher une carte (fonctionnalité future)
+   - 🗑️ Pour effacer la conversation
+   - ⚙️ Pour les paramètres (fonctionnalité future)
 
 ## Personnalisation
 
-### Changer les couleurs et le style
-Vous pouvez modifier les variables CSS dans le fichier `public/css/styles.css` pour changer les couleurs et l'apparence de l'application.
+### Interface graphique
+Modifiez les variables dans `public/css/styles.css` pour changer l'apparence :
 
-### Ajouter des personnages
-Modifiez la liste des joueurs dans le fichier `public/js/ui.js` pour ajouter ou modifier les personnages disponibles.
+```css
+:root {
+    --primary-color: #4a4e69;
+    --secondary-color: #22223b;
+    --accent-color: #9a8c98;
+    --light-color: #f2e9e4;
+    --dark-color: #22223b;
+}
+```
 
-### Changer les réponses de démo
-Les réponses prédéfinies utilisées en mode démo peuvent être modifiées dans le fichier `public/js/api.js`.
+### Personnages et campagne
+Personnalisez les personnages et les informations de campagne dans `public/js/ui.js` et `public/js/api.js`.
 
-## Structure des fichiers
+### Prompt du Maître du Jeu
+Pour ajuster le comportement du LLM comme Maître du Jeu, modifiez la fonction `createDMPrompt` dans `public/js/api.js`.
 
-### proxy.py
-Ce fichier contient le serveur HTTP Python qui :
-1. Sert les fichiers statiques de l'application
-2. Agit comme un proxy pour les requêtes vers Ollama
-3. Gère les problèmes de CORS
+## Dépannage
 
-### Dockerfile
-Configure une image Docker basée sur Python Alpine qui :
-1. Copie les fichiers nécessaires dans l'image
-2. Installe les dépendances requises
-3. Expose le port 9425
-4. Lance le serveur Python
+### Ollama non détecté
+Si Ollama n'est pas détecté :
+1. Vérifiez que Ollama est en cours d'exécution
+2. Contrôlez l'adresse configurée dans `OLLAMA_URL` (proxy.py)
+3. Assurez-vous qu'au moins un modèle est installé dans Ollama
 
-### docker_install.sh
-Script shell qui automatise le processus de construction et d'exécution du conteneur Docker.
+L'application basculera automatiquement en mode démo si Ollama n'est pas accessible.
+
+### Problèmes de proxy
+Le serveur Python fait office de proxy pour éviter les problèmes CORS. Si vous rencontrez des difficultés :
+1. Vérifiez les logs du serveur Python
+2. Assurez-vous que le port 9425 n'est pas bloqué par un pare-feu
+
+## Mode démo
+
+Si Ollama n'est pas disponible, l'application utilise des réponses prédéfinies pour démontrer ses fonctionnalités. Ces réponses se trouvent dans la fonction `generateDemoResponse()` du fichier `public/js/api.js`.
+
+## Développement futur
+
+- [ ] Système de cartes interactif
+- [ ] Gestion des personnages non-joueurs
+- [ ] Paramètres de jeu configurables
+- [ ] Support pour d'autres moteurs LLM
+- [ ] Collaboration multi-joueurs en temps réel
+
+## Licence
+
+Ce projet est distribué sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+
+## Contributions
+
+Les contributions sont les bienvenues ! N'hésitez pas à soumettre des pull requests ou à ouvrir des issues pour signaler des bugs ou proposer des améliorations.
