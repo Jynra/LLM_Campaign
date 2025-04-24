@@ -49,7 +49,7 @@ roleplay-llm-site/
    ```
 5. Accédez à l'application dans votre navigateur :
    ```
-   http://localhost:9428
+   http://localhost:9425
    ```
 
 ## Installation sans Docker (développement local)
@@ -65,7 +65,7 @@ roleplay-llm-site/
    ```
 4. Accédez à l'application dans votre navigateur :
    ```
-   http://localhost:9428
+   http://localhost:9425
    ```
 
 ## Configuration d'Ollama
@@ -119,7 +119,7 @@ Ce fichier contient le serveur HTTP Python qui :
 Configure une image Docker basée sur Python Alpine qui :
 1. Copie les fichiers nécessaires dans l'image
 2. Installe les dépendances requises
-3. Expose le port 9428
+3. Expose le port 9425
 4. Lance le serveur Python
 
 ### docker_install.sh
