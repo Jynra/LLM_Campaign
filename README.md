@@ -1,4 +1,4 @@
-# Site de Jeu de Rôle avec Ollama - Version Python Simple
+# Site de Jeu de Rôle avec Ollama
 
 Ce projet est une application web pour jouer à des jeux de rôle avec un modèle de langage (LLM) comme Maître du Jeu. Cette version utilise un serveur HTTP Python simple qui fait également office de proxy vers Ollama.
 
