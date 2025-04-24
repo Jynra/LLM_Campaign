@@ -13,4 +13,4 @@ docker build -t llm-campaign-image .
 docker run -d -p 9425:9425 -v ./public:/llm-campaign --name llm-campaign llm-campaign-image
 
 echo "Le site de roleplay est lancé sur http://localhost:9425"
-echo "Pour les requêtes vers Ollama, modifiez l'URL dans public/js/api.js"
+echo "Utilise un proxy vers Ollama à l'adresse http://172.17.0.8:11434"

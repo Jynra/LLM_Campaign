@@ -5,7 +5,7 @@
 class ApiClient {
     constructor() {
         // URL directe vers Ollama (changez cette valeur selon votre configuration)
-        this.ollamaUrl = 'http://172.17.0.8:11434/api';
+        this.ollamaUrl = '/proxy-ollama/api';  // URL du proxy Python vers Ollama
         this.ollamaModel = 'mistral'; // Modèle par défaut
     }
     

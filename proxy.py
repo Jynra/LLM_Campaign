@@ -5,7 +5,6 @@ import json
 import urllib.request
 import urllib.error
 import urllib.parse
-import threading
 import os
 import sys
 import requests
@@ -13,7 +12,7 @@ from http import HTTPStatus
 
 # Configuration
 PORT = 9425
-OLLAMA_URL = "http://100.78.241.109:11434"  # URL vers Ollama sur le réseau Docker
+OLLAMA_URL = "http://172.17.0.8:11434"  # URL vers Ollama sur le réseau Docker
 
 class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -87,54 +86,8 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 print(f"Erreur lors de la communication avec Ollama: {e}")
                 self.send_error(500, f"Erreur lors de la communication avec Ollama: {e}")
         else:
-            # Afficher le chemin demandé pour le débogage
-            print(f"Requested path: {self.path}")
-            
-            # Réparer le chemin si on utilise index.html à la racine
-            if self.path == '/':
-                self.path = '/index.html'
-            
-            # Vérifier si le fichier existe
-            file_path = os.path.join(os.getcwd(), self.path.lstrip('/'))
-            print(f"Looking for file at: {file_path}")
-            
-            # Liste des fichiers dans le répertoire en cas d'erreur
-            if not os.path.exists(file_path):
-                print(f"File not found. Contents of directory:")
-                print(os.listdir(os.getcwd()))
-                
-                # Vérifier si le fichier peut être dans un sous-répertoire
-                for root, dirs, files in os.walk(os.getcwd()):
-                    for file in files:
-                        if file == os.path.basename(self.path):
-                            print(f"Found similar file at: {os.path.join(root, file)}")
-            
-            try:
-                # Servir le fichier statique
-                return http.server.SimpleHTTPRequestHandler.do_GET(self)
-            except Exception as e:
-                print(f"Error serving file: {e}")
-                self.send_error(404, f"File not found: {self.path}")
-
-def test_ollama_connection():
-    """Test de connexion à Ollama avant de démarrer le serveur"""
-    print(f"Tentative de connexion à Ollama sur {OLLAMA_URL}...")
-    try:
-        response = requests.get(f"{OLLAMA_URL}/api/tags")
-        if response.status_code == 200:
-            models = response.json().get('models', [])
-            model_names = [model.get('name') for model in models]
-            print(f"✅ Connexion à Ollama réussie! Modèles disponibles : {', '.join(model_names)}")
-            return True
-        else:
-            print(f"⚠️ Ollama répond mais avec un code d'erreur: {response.status_code}")
-            print(f"Réponse: {response.text}")
-            return False
-    except Exception as e:
-        print(f"⚠️ Impossible de se connecter à Ollama: {e}")
-        print(f"⚠️ Vérifiez que Ollama est en cours d'exécution sur {OLLAMA_URL}")
-        print("⚠️ Le serveur sera démarré, mais les fonctionnalités LLM ne seront pas disponibles")
-        return False
+            # Gérer les fichiers statiques normalement
+            return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
 def run_server():
     """Démarrer le serveur HTTP avec le proxy"""
@@ -142,9 +95,6 @@ def run_server():
     print(f"Répertoire de travail: {os.getcwd()}")
     print(f"Contenu du répertoire:")
     print(os.listdir(os.getcwd()))
-    
-    # Tester la connexion à Ollama
-    test_ollama_connection()
     
     # Démarrer le serveur
     handler = ProxyHTTPRequestHandler
