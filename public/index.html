@@ -85,7 +85,7 @@
                 <li>Utilisez le bouton 🎲 pour lancer des dés</li>
             </ol>
             <div class="modal-buttons">
-                <button id="welcome-continue">Commencer l'aventure</button>
+                <button id="welcome-continue" onclick="document.getElementById('welcome-modal').style.display='none'; localStorage.setItem('welcomeShown', 'true');">Commencer l'aventure</button>
             </div>
         </div>
     </div>

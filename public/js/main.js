@@ -198,15 +198,34 @@ function displayStatusMessage(message) {
 // Afficher la modale de bienvenue
 function showWelcomeModal() {
     const welcomeModal = document.getElementById('welcome-modal');
-    const continueButton = document.getElementById('welcome-continue');
+    
+    // Sélectionner le bouton par sa classe ou son texte
+    const continueButton = document.querySelector('.modal-buttons button') || 
+                           document.querySelector('button:contains("Commencer l\'aventure")');
     
     if (welcomeModal && continueButton) {
         welcomeModal.style.display = 'flex';
         
-        // Fermer la modale au clic sur le bouton
-        continueButton.addEventListener('click', () => {
+        // Ajout du log pour vérifier que l'événement est bien attaché
+        console.log("Attaching click event to welcome button");
+        
+        // Utiliser onclick directement peut aider à résoudre certains problèmes
+        continueButton.onclick = function() {
+            console.log("Welcome button clicked");
             welcomeModal.style.display = 'none';
             localStorage.setItem('welcomeShown', 'true');
+        };
+        
+        // Alternative avec addEventListener
+        continueButton.addEventListener('click', function() {
+            console.log("Welcome button clicked (addEventListener)");
+            welcomeModal.style.display = 'none';
+            localStorage.setItem('welcomeShown', 'true');
+        });
+    } else {
+        console.error("Modal or button not found", {
+            modal: welcomeModal, 
+            button: continueButton
         });
     }
 }
