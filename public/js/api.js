@@ -1,11 +1,11 @@
 /**
- * Client API pour communiquer avec le backend Ollama
+ * Client API pour communiquer directement avec Ollama
  */
 
 class ApiClient {
     constructor() {
-        // URL du proxy Python vers Ollama
-        this.ollamaUrl = '/proxy-ollama/api';
+        // URL directe vers Ollama (changez cette valeur selon votre configuration)
+        this.ollamaUrl = 'http://172.17.0.8:11434/api';
         this.ollamaModel = 'mistral'; // Modèle par défaut
     }
     
@@ -13,7 +13,7 @@ class ApiClient {
      * Effectue une requête vers l'API Ollama
      */
     async sendToOllama(prompt) {
-        console.log(`Envoi d'une requête à Ollama avec le modèle: ${this.ollamaModel}`);
+        console.log(`Envoi d'une requête directe à Ollama avec le modèle: ${this.ollamaModel}`);
         
         try {
             const response = await fetch(`${this.ollamaUrl}/generate`, {
