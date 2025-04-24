@@ -1,75 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Roleplay avec IA</title>
-	<link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleplay avec IA</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-	<header>
-		<h1>Roleplay avec IA - Maître du Jeu Virtuel</h1>
-	</header>
-	
-	<div class="container">
-		<div class="sidebar">
-			<div class="game-selection">
-				<h3>Campagne en cours</h3>
-				<p id="current-campaign">Aventure dans les Terres Oubliées</p>
-			</div>
-			
-			<div class="player-list">
-				<h3>Joueurs connectés</h3>
-				<div class="player">
-					<div class="player-avatar">G</div>
-					<div class="player-name">Galadriel (Elfe Mage)</div>
-				</div>
-				<div class="player">
-					<div class="player-avatar">T</div>
-					<div class="player-name">Thorin (Nain Guerrier)</div>
-				</div>
-				<div class="player">
-					<div class="player-avatar">A</div>
-					<div class="player-name">Aragorn (Humain Rôdeur)</div>
-				</div>
-				<div class="player">
-					<div class="player-avatar">L</div>
-					<div class="player-name">Legolas (Elfe Archer)</div>
-				</div>
-				<div class="player">
-					<div class="player-avatar">M</div>
-					<div class="player-name">MJ (L'Intelligence)</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="chat-container">
-			<div class="chat-header">
-				<h2>Aventure dans les Terres Oubliées</h2>
-				<div class="toolbar">
-					<button title="Jet de dés" id="dice-button">🎲</button>
-					<button title="Afficher la carte" id="map-button">🗺️</button>
-					<button title="Paramètres" id="settings-button">⚙️</button>
-				</div>
-			</div>
-			
-			<div class="chat-messages" id="chat-messages">
-				<!-- Messages will be added here by JavaScript -->
-			</div>
-			
-			<div class="chat-input">
-				<input type="text" placeholder="Décrivez votre action..." id="message-input">
-				<button id="send-button">Envoyer</button>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Scripts -->
-	<script src="js/config.js"></script>
-	<script src="js/models.js"></script>
-	<script src="js/chat.js"></script>
-	<script src="js/ui.js"></script>
-	<script src="js/api.js"></script>
-	<script src="js/main.js"></script>
+    <header>
+        <h1>Roleplay avec IA - Maître du Jeu Virtuel</h1>
+        <div class="ollama-status" id="ollama-status"></div>
+    </header>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="game-selection">
+                <h3>Campagne en cours</h3>
+                <p id="current-campaign">Aventure dans les Terres Oubliées</p>
+                <div class="model-selector">
+                    <label for="model-select">Modèle Ollama:</label>
+                    <select id="model-select">
+                        <option value="mistral">mistral</option>
+                        <option value="llama2">llama2</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="player-list">
+                <h3>Joueurs connectés</h3>
+                <div class="player">
+                    <div class="player-avatar">G</div>
+                    <div class="player-name">Galadriel (Elfe Mage)</div>
+                </div>
+                <div class="player">
+                    <div class="player-avatar">T</div>
+                    <div class="player-name">Thorin (Nain Guerrier)</div>
+                </div>
+                <div class="player">
+                    <div class="player-avatar">A</div>
+                    <div class="player-name">Aragorn (Humain Rôdeur)</div>
+                </div>
+                <div class="player">
+                    <div class="player-avatar">L</div>
+                    <div class="player-name">Legolas (Elfe Archer)</div>
+                </div>
+                <div class="player">
+                    <div class="player-avatar">M</div>
+                    <div class="player-name">MJ (L'Intelligence)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Aventure dans les Terres Oubliées</h2>
+                <div class="toolbar">
+                    <button title="Jet de dés" id="dice-button">🎲</button>
+                    <button title="Afficher la carte" id="map-button">🗺️</button>
+                    <button title="Effacer la conversation" id="clear-button">🗑️</button>
+                    <button title="Paramètres" id="settings-button">⚙️</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be added here by JavaScript -->
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" placeholder="Décrivez votre action..." id="message-input">
+                <button id="send-button">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour les informations de bienvenue -->
+    <div class="modal" id="welcome-modal">
+        <div class="modal-content">
+            <h2>Bienvenue dans votre aventure !</h2>
+            <p>Vous êtes sur le point de commencer une partie de jeu de rôle avec un Maître du Jeu IA.</p>
+            <p>Pour commencer :</p>
+            <ol>
+                <li>Choisissez votre personnage en cliquant sur un nom dans la barre latérale</li>
+                <li>Écrivez vos actions dans la zone de texte en bas</li>
+                <li>Utilisez le bouton 🎲 pour lancer des dés</li>
+            </ol>
+            <div class="modal-buttons">
+                <button id="welcome-continue">Commencer l'aventure</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
