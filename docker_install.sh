@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Supprimer l'ancien conteneur s'il existe
-docker rm llm-campaign 2>/dev/null || true
+docker rm -f llm-campaign 2>/dev/null || true
 
 # Supprimer l'ancienne image si elle existe
 docker rmi llm-campaign-image 2>/dev/null || true
