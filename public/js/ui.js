@@ -42,46 +42,34 @@ class UIManager {
     }
     
     /**
-     * Configure les écouteurs d'événements
-     */
-    setupEventListeners() {
-        // Envoi de message
-        this.sendButton.addEventListener('click', () => this.handleSendMessage());
-        this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.handleSendMessage();
-            }
-        });
-        
-        // Jets de dés
-        this.diceButton.addEventListener('click', () => this.showDiceRollModal());
-        
-        // Carte (à implémenter)
-        this.mapButton.addEventListener('click', () => {
-            console.log('Map button clicked - functionality not implemented');
-            // Implémentation future
-        });
-        
-        // Effacer la conversation
-        this.clearButton.addEventListener('click', () => {
-            this.chatManager.clearChat();
-        });
-        
-        // Paramètres (à implémenter)
-        this.settingsButton.addEventListener('click', () => {
-            console.log('Settings button clicked - functionality not implemented');
-            // Implémentation future
-        });
-        
-        // Sélection du personnage
-        document.querySelectorAll('.player').forEach((playerEl, index) => {
-            if (index < this.demoPlayers.length) {
-                playerEl.addEventListener('click', () => {
-                    this.selectPlayer(index);
-                });
-            }
-        });
-    }
+	 * Configure les écouteurs d'événements
+	 */
+	setupEventListeners() {
+	    // ... code existant ...
+	
+	    // Écouter l'événement de réinitialisation du jeu
+	    document.addEventListener('game:reset', (event) => {
+	        console.log('Événement de réinitialisation reçu:', event.detail);
+		
+	        // Mettre à jour l'interface avec le nouveau jeu
+	        const game = event.detail.game;
+	        const player = event.detail.player;
+		
+	        // Mettre à jour le titre de la campagne
+	        document.querySelector('.chat-header h2').textContent = game.title;
+	        document.getElementById('current-campaign').textContent = game.title;
+		
+	        // Mettre à jour la liste des joueurs
+	        this.updatePlayerList(game.players);
+		
+	        // Réinitialiser le joueur actif
+	        this.currentPlayerIndex = 0;
+	        this.selectPlayer(0, false); // Ne pas ajouter de message système lors de la réinitialisation
+		
+	        // Afficher un message de notification
+	        this.showNotification("Le jeu a été réinitialisé. Une nouvelle aventure commence!");
+	    });
+	}
     
     /**
      * Gère l'envoi d'un message
@@ -114,30 +102,74 @@ class UIManager {
     }
     
     /**
-     * Sélectionne un joueur pour l'utilisateur actuel
-     */
-    selectPlayer(index) {
-        // Mettre à jour l'index du joueur actuel
-        this.currentPlayerIndex = index;
-        this.chatManager.currentPlayer = this.demoPlayers[index];
-        
-        // Mettre à jour l'interface
-        document.querySelectorAll('.player').forEach((el, i) => {
-            if (i === index) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
-            }
-        });
-        
-        // Afficher un message dans le chat
-        this.chatManager.addMessage(
-            `Vous contrôlez maintenant ${this.demoPlayers[index].name} (${this.demoPlayers[index].character})`,
-            'Système',
-            'S',
-            CONFIG.ui.messageTypes.SYSTEM
-        );
-    }
+	 * Sélectionne un joueur pour l'utilisateur actuel
+	 * @param {number} index - Index du joueur à sélectionner
+	 * @param {boolean} showMessage - Afficher un message dans le chat (défaut: true)
+	 */
+	selectPlayer(index, showMessage = true) {
+	    // Mettre à jour l'index du joueur actuel
+	    this.currentPlayerIndex = index;
+	    this.chatManager.currentPlayer = this.demoPlayers[index];
+	
+	    // Mettre à jour l'interface
+	    document.querySelectorAll('.player').forEach((el, i) => {
+	        if (i === index) {
+	            el.classList.add('active');
+	        } else {
+	            el.classList.remove('active');
+	        }
+	    });
+	
+	    // Afficher un message dans le chat si demandé
+	    if (showMessage) {
+	        this.chatManager.addMessage(
+	            `Vous contrôlez maintenant ${this.demoPlayers[index].name} (${this.demoPlayers[index].character})`,
+	            'Système',
+	            'S',
+	            CONFIG.ui.messageTypes.SYSTEM
+	        );
+	    }
+	}
+
+	/**
+	 * Affiche une notification à l'utilisateur
+	 * @param {string} message - Message à afficher
+	 */
+	showNotification(message) {
+	    // Vérifier si le conteneur de statut existe
+	    let statusContainer = document.getElementById('status-container');
+	
+	    if (!statusContainer) {
+	        // Créer le conteneur de statut
+	        statusContainer = document.createElement('div');
+	        statusContainer.id = 'status-container';
+	        statusContainer.className = 'status-container';
+		
+	        // Ajouter au corps du document
+	        document.body.appendChild(statusContainer);
+	    }
+	
+	    // Créer le message de statut
+	    const statusMessage = document.createElement('div');
+	    statusMessage.className = 'status-message';
+	    statusMessage.textContent = message;
+	
+	    // Ajouter le message au conteneur
+	    statusContainer.appendChild(statusMessage);
+	
+	    // Supprimer après quelques secondes
+	    setTimeout(() => {
+	        statusMessage.classList.add('fade-out');
+	        setTimeout(() => {
+	            statusMessage.remove();
+			
+	            // Supprimer le conteneur s'il est vide
+	            if (statusContainer.children.length === 0) {
+	                statusContainer.remove();
+	            }
+	        }, 500);
+	    }, 5000);
+	}
     
     /**
      * Affiche une fenêtre modale pour les jets de dés

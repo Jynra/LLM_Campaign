@@ -52,6 +52,12 @@ async function initializeApp() {
             messageObjects
         );
         
+        // Stockage global du jeu pour permettre la réinitialisation
+        window.currentGameData = {
+            gameInfo: gameInfo,
+            players: playerObjects
+        };
+        
         // Sélectionner le joueur actuel (premier joueur pour la démo)
         const currentPlayer = playerObjects[0];
         

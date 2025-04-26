@@ -265,21 +265,57 @@ class ChatManager {
     }
     
     /**
-     * Efface tous les messages et réinitialise la conversation
-     */
-    clearChat() {
-        if (confirm('Êtes-vous sûr de vouloir effacer toute la conversation ? Cette action est irréversible.')) {
-            this.messageHistory = [];
-            localStorage.removeItem(`${this.localStorageKey}_${this.currentGame.id}`);
-            this.refreshChatDisplay();
-            
-            // Ajouter un message initial du MJ
-            this.addMessage(
-                "Bienvenue dans une nouvelle aventure ! Que souhaitez-vous faire ?",
-                CONFIG.dm.name,
-                CONFIG.dm.avatar,
-                CONFIG.ui.messageTypes.DM
-            );
-        }
-    }
+	 * Efface tous les messages et réinitialise complètement le jeu
+	 */
+	clearChat() {
+	    if (confirm('Êtes-vous sûr de vouloir effacer toute la conversation et réinitialiser le jeu ? Cette action est irréversible.')) {
+	        // 1. Effacer l'historique des messages
+	        this.messageHistory = [];
+		
+	        // 2. Supprimer toutes les données sauvegardées
+	        const gameId = this.currentGame.id;
+		
+	        // Supprimer les messages spécifiques à ce jeu
+	        localStorage.removeItem(`${this.localStorageKey}_${gameId}`);
+		
+	        // 3. Réinitialiser le jeu
+	        // Récupérer un nouveau jeu "vierge" à partir de l'API
+	        const newGameInfo = apiClient.getGameInfo(gameId);
+	        const newPlayers = apiClient.getPlayersList(gameId).map(player => Player.fromJSON(player));
+		
+	        // Créer un nouvel objet de jeu
+	        const newGame = new Game(
+	            newGameInfo.id,
+	            newGameInfo.title,
+	            newGameInfo.description,
+	            newPlayers,
+	            [] // Pas de messages initiaux
+	        );
+		
+	        // Mettre à jour le jeu actuel
+	        this.currentGame = newGame;
+		
+	        // 4. Réinitialiser le joueur actuel (prendre le premier joueur par défaut)
+	        this.currentPlayer = newPlayers[0];
+		
+	        // 5. Mettre à jour l'interface
+	        this.refreshChatDisplay();
+		
+	        // 6. Ajouter un message initial du MJ pour démarrer une nouvelle aventure
+	        this.addMessage(
+	            "Bienvenue dans une nouvelle aventure ! Que souhaitez-vous faire pour commencer ?",
+	            CONFIG.dm.name,
+	            CONFIG.dm.avatar,
+	            CONFIG.ui.messageTypes.DM
+	        );
+		
+	        // 7. Déclencher un événement personnalisé pour informer les autres composants
+	        const resetEvent = new CustomEvent('game:reset', { 
+	            detail: { game: newGame, player: this.currentPlayer } 
+	        });
+	        document.dispatchEvent(resetEvent);
+		
+	        console.log("Jeu réinitialisé avec succès");
+	    }
+	}
 }
