@@ -172,26 +172,40 @@ class UIManager {
 	    );
 	
 	    try {
-	        // Effacer la conversation actuelle et réinitialiser
-	        this.chatManager.messageHistory = [];
-	        localStorage.removeItem(`${this.chatManager.localStorageKey}_${this.chatManager.currentGame.id}`);
+	        // D'abord, réinitialiser complètement le jeu (comme le bouton corbeille)
+	        // Récupérer un nouveau jeu "vierge" à partir de l'API
+	        const gameId = this.chatManager.currentGame.id;
+	        const newGameInfo = apiClient.getGameInfo(gameId);
+	        const newPlayers = apiClient.getPlayersList(gameId).map(player => Player.fromJSON(player));
 		
-	        // Mettre à jour les informations du jeu
-	        this.chatManager.currentGame.title = campaignName;
-	        this.chatManager.currentGame.description = campaignPrompt;
-	        this.chatManager.currentGame.genre = campaignGenre;
+	        // Créer un nouvel objet de jeu
+	        const newGame = new Game(
+	            newGameInfo.id,
+	            campaignName, // Utiliser le nom de la nouvelle campagne
+	            campaignPrompt, // Utiliser la description fournie
+	            newPlayers,
+	            [] // Pas de messages initiaux
+	        );
+		
+	        // Mettre à jour le genre
+	        newGame.genre = campaignGenre;
+		
+	        // Mettre à jour le jeu actuel
+	        this.chatManager.currentGame = newGame;
+		
+	        // Réinitialiser le joueur actuel (prendre le premier joueur par défaut)
+	        this.chatManager.currentPlayer = newPlayers[0];
+	        this.currentPlayerIndex = 0;
+		
+	        // Effacer l'historique des messages et supprimer le stockage local
+	        this.chatManager.messageHistory = [];
+	        localStorage.removeItem(`${this.chatManager.localStorageKey}_${gameId}`);
 		
 	        // Mettre à jour l'interface
 	        document.querySelector('.chat-header h2').textContent = campaignName;
 	        document.getElementById('current-campaign').textContent = campaignName;
-		
-	        // Afficher un message de bienvenue dans le chat
-	        this.chatManager.addMessage(
-	            `Bienvenue dans "${campaignName}" ! Création du monde en cours...`,
-	            "Système",
-	            "S",
-	            CONFIG.ui.messageTypes.SYSTEM
-	        );
+	        this.updatePlayerList(newPlayers);
+	        this.chatManager.refreshChatDisplay();
 		
 	        // Créer un message de demande d'initialisation pour le LLM
 	        const initMessage = {
@@ -222,6 +236,12 @@ class UIManager {
 		
 	        // Sauvegarder les messages
 	        this.chatManager.saveMessageHistory();
+		
+	        // Déclencher un événement de réinitialisation pour informer d'autres composants
+	        const resetEvent = new CustomEvent('game:reset', { 
+	            detail: { game: newGame, player: this.chatManager.currentPlayer } 
+	        });
+	        document.dispatchEvent(resetEvent);
 		
 	        // Afficher une notification de succès
 	        this.showNotification(`Campagne "${campaignName}" démarrée avec succès!`);
