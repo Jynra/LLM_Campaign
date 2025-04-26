@@ -495,6 +495,7 @@ header {
     background-color: var(--primary-color);
 }
 
+
 /* Responsive design pour les appareils mobiles */
 @media (max-width: 768px) {
     /* Structure globale */
@@ -504,9 +505,11 @@ header {
     
     /* En-tête et titre */
     .chat-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.75rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 5;
     }
     
     .chat-header h2 {
@@ -563,9 +566,24 @@ header {
         margin-bottom: 0.25rem;
     }
     
+	.chat-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 150px); /* Hauteur ajustable selon votre en-tête */
+        position: relative;
+    }
+
     /* Zone de chat */
     .chat-messages {
+        flex: 1;
+        overflow-y: scroll;
         padding: 0.75rem;
+        -webkit-overflow-scrolling: touch; /* Pour une meilleure inertie sur iOS */
+        position: absolute;
+        top: 60px; /* Ajustez en fonction de la hauteur de votre chat-header */
+        bottom: 70px; /* Ajustez en fonction de la hauteur de votre chat-input */
+        left: 0;
+        right: 0;
     }
     
     .message {
@@ -578,7 +596,14 @@ header {
     
     /* Zone de saisie */
     .chat-input {
-        padding: 0.75rem;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        background-color: #f0f0f0;
+        border-top: 1px solid #ddd;
+        z-index: 5;
     }
     
     .chat-input input {
