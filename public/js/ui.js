@@ -45,32 +45,200 @@ class UIManager {
 	 * Configure les écouteurs d'événements
 	 */
 	setupEventListeners() {
-	    // ... code existant ...
-	
-	    // Écouter l'événement de réinitialisation du jeu
-	    document.addEventListener('game:reset', (event) => {
-	        console.log('Événement de réinitialisation reçu:', event.detail);
+		// Envoi de message
+		this.sendButton.addEventListener('click', () => this.handleSendMessage());
+		this.messageInput.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') {
+				this.handleSendMessage();
+			}
+		});
 		
-	        // Mettre à jour l'interface avec le nouveau jeu
-	        const game = event.detail.game;
-	        const player = event.detail.player;
+		// Bouton de démarrage de campagne
+		this.startButton = document.getElementById('start-button');
+		this.startButton.addEventListener('click', () => this.showStartCampaignModal());
 		
-	        // Mettre à jour le titre de la campagne
-	        document.querySelector('.chat-header h2').textContent = game.title;
-	        document.getElementById('current-campaign').textContent = game.title;
+		// Jets de dés
+		this.diceButton.addEventListener('click', () => this.showDiceRollModal());
 		
-	        // Mettre à jour la liste des joueurs
-	        this.updatePlayerList(game.players);
+		// Carte (à implémenter)
+		this.mapButton.addEventListener('click', () => {
+			console.log('Map button clicked - functionality not implemented');
+			// Implémentation future
+		});
 		
-	        // Réinitialiser le joueur actif
-	        this.currentPlayerIndex = 0;
-	        this.selectPlayer(0, false); // Ne pas ajouter de message système lors de la réinitialisation
+		// Effacer la conversation
+		this.clearButton.addEventListener('click', () => {
+			this.chatManager.clearChat();
+		});
 		
-	        // Afficher un message de notification
-	        this.showNotification("Le jeu a été réinitialisé. Une nouvelle aventure commence!");
-	    });
+		// Paramètres (à implémenter)
+		this.settingsButton.addEventListener('click', () => {
+			console.log('Settings button clicked - functionality not implemented');
+			// Implémentation future
+		});
+		
+		// Sélection du personnage
+		document.querySelectorAll('.player').forEach((playerEl, index) => {
+			if (index < this.demoPlayers.length) {
+				playerEl.addEventListener('click', () => {
+					this.selectPlayer(index);
+				});
+			}
+		});
+		
+		// Configuration du modal de démarrage de campagne
+		const startModal = document.getElementById('start-modal');
+		if (startModal) {
+			// Fermer le modal en cliquant en dehors
+			startModal.addEventListener('click', (e) => {
+				if (e.target === startModal) {
+					startModal.style.display = 'none';
+				}
+			});
+			
+			// Bouton annuler
+			const cancelButton = document.getElementById('start-cancel');
+			if (cancelButton) {
+				cancelButton.addEventListener('click', () => {
+					startModal.style.display = 'none';
+				});
+			}
+			
+			// Formulaire de démarrage de campagne
+			const startForm = document.getElementById('start-form');
+			if (startForm) {
+				startForm.addEventListener('submit', (e) => {
+					e.preventDefault();
+					this.handleStartCampaign();
+				});
+			}
+		}
+		
+		// Écouter l'événement de réinitialisation du jeu
+		document.addEventListener('game:reset', (event) => {
+			console.log('Événement de réinitialisation reçu:', event.detail);
+			
+			// Mettre à jour l'interface avec le nouveau jeu
+			const game = event.detail.game;
+			const player = event.detail.player;
+			
+			// Mettre à jour le titre de la campagne
+			document.querySelector('.chat-header h2').textContent = game.title;
+			document.getElementById('current-campaign').textContent = game.title;
+			
+			// Mettre à jour la liste des joueurs
+			this.updatePlayerList(game.players);
+			
+			// Réinitialiser le joueur actif
+			this.currentPlayerIndex = 0;
+			this.selectPlayer(0, false); // Ne pas ajouter de message système lors de la réinitialisation
+			
+			// Afficher un message de notification
+			this.showNotification("Le jeu a été réinitialisé. Une nouvelle aventure commence!");
+		});
 	}
     
+	/**
+	 * Affiche la fenêtre modale pour démarrer une nouvelle campagne
+	 */
+	showStartCampaignModal() {
+	    const modal = document.getElementById('start-modal');
+	    if (modal) {
+	        modal.style.display = 'flex';
+	    }
+	}
+	
+	/**
+	 * Gère le démarrage d'une nouvelle campagne
+	 */
+	async handleStartCampaign() {
+	    // Récupérer les informations du formulaire
+	    const campaignName = document.getElementById('campaign-name').value;
+	    const campaignGenre = document.getElementById('campaign-genre').value;
+	    const campaignPrompt = document.getElementById('campaign-prompt').value;
+	
+	    // Masquer le modal
+	    const modal = document.getElementById('start-modal');
+	    if (modal) {
+	        modal.style.display = 'none';
+	    }
+	
+	    // Afficher un message de chargement
+	    this.chatManager.addMessage(
+	        "Création de la nouvelle campagne en cours...",
+	        "Système",
+	        "S",
+	        CONFIG.ui.messageTypes.SYSTEM
+	    );
+	
+	    try {
+	        // Effacer la conversation actuelle et réinitialiser
+	        this.chatManager.messageHistory = [];
+	        localStorage.removeItem(`${this.chatManager.localStorageKey}_${this.chatManager.currentGame.id}`);
+		
+	        // Mettre à jour les informations du jeu
+	        this.chatManager.currentGame.title = campaignName;
+	        this.chatManager.currentGame.description = campaignPrompt;
+	        this.chatManager.currentGame.genre = campaignGenre;
+		
+	        // Mettre à jour l'interface
+	        document.querySelector('.chat-header h2').textContent = campaignName;
+	        document.getElementById('current-campaign').textContent = campaignName;
+		
+	        // Afficher un message de bienvenue dans le chat
+	        this.chatManager.addMessage(
+	            `Bienvenue dans "${campaignName}" ! Création du monde en cours...`,
+	            "Système",
+	            "S",
+	            CONFIG.ui.messageTypes.SYSTEM
+	        );
+		
+	        // Créer un message de demande d'initialisation pour le LLM
+	        const initMessage = {
+	            content: `Initialise cette nouvelle campagne "${campaignName}" (genre: ${campaignGenre}). 
+	Crée un message d'introduction qui présente le monde, l'ambiance et la situation initiale des personnages.
+	${campaignPrompt}`,
+	            sender: "Système",
+	            avatar: "S",
+	            type: CONFIG.ui.messageTypes.SYSTEM
+	        };
+		
+	        // Afficher un indicateur de chargement
+	        this.chatManager.showTypingIndicator();
+		
+	        // Envoyer la demande au LLM
+	        const response = await apiClient.sendMessage(this.chatManager.currentGame.id, initMessage);
+		
+	        // Supprimer l'indicateur de chargement
+	        this.chatManager.removeTypingIndicator();
+		
+	        // Ajouter la réponse du MJ
+	        this.chatManager.addMessage(
+	            response.content,
+	            CONFIG.dm.name,
+	            CONFIG.dm.avatar,
+	            CONFIG.ui.messageTypes.DM
+	        );
+		
+	        // Sauvegarder les messages
+	        this.chatManager.saveMessageHistory();
+		
+	        // Afficher une notification de succès
+	        this.showNotification(`Campagne "${campaignName}" démarrée avec succès!`);
+		
+	    } catch (error) {
+	        console.error('Erreur lors du démarrage de la campagne:', error);
+		
+	        // Afficher un message d'erreur
+	        this.chatManager.addMessage(
+	            "Erreur lors de la création de la campagne. Veuillez réessayer.",
+	            "Système",
+	            "S",
+	            CONFIG.ui.messageTypes.SYSTEM
+	        );
+	    }
+	}
+
     /**
      * Gère l'envoi d'un message
      */

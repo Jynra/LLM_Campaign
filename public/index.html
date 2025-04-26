@@ -54,6 +54,7 @@
             <div class="chat-header">
                 <h2>Aventure dans les Terres Oubliées</h2>
                 <div class="toolbar">
+					<button title="Démarrer une nouvelle campagne" id="start-button">🚀</button>
                     <button title="Jet de dés" id="dice-button">🎲</button>
                     <button title="Afficher la carte" id="map-button">🗺️</button>
                     <button title="Effacer la conversation" id="clear-button">🗑️</button>
@@ -88,6 +89,36 @@
             </div>
         </div>
     </div>
+
+	<!-- Modal pour le démarrage d'une nouvelle campagne -->
+	<div class="modal" id="start-modal">
+	    <div class="modal-content">
+	        <h2>Démarrer une nouvelle campagne</h2>
+	        <form id="start-form">
+	            <label for="campaign-name">Nom de la campagne:</label>
+	            <input type="text" id="campaign-name" value="Aventure dans les Terres Oubliées" required>
+			
+	            <label for="campaign-genre">Genre:</label>
+	            <select id="campaign-genre" required>
+	                <option value="fantasy">Fantasy</option>
+	                <option value="sci-fi">Science-Fiction</option>
+	                <option value="medieval">Médiéval</option>
+	                <option value="post-apocalyptic">Post-Apocalyptique</option>
+	                <option value="western">Western</option>
+	                <option value="cyberpunk">Cyberpunk</option>
+	                <option value="horror">Horreur</option>
+	            </select>
+			
+	            <label for="campaign-prompt">Description et contexte de la campagne:</label>
+	            <textarea id="campaign-prompt" placeholder="Décrivez le contexte, les spécificités et l'ambiance de votre campagne...">Une aventure épique dans un monde fantastique peuplé de créatures mystérieuses et de magie ancienne. Les joueurs commencent dans un petit village à la frontière du royaume, où d'étranges phénomènes se produisent.</textarea>
+			
+	            <div class="modal-buttons">
+	                <button type="submit">Démarrer l'aventure</button>
+	                <button type="button" id="start-cancel">Annuler</button>
+	            </div>
+	        </form>
+	    </div>
+	</div>
     
     <!-- Scripts -->
     <script src="js/config.js"></script>
