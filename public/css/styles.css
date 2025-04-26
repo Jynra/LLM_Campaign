@@ -497,16 +497,61 @@ header {
 
 /* Responsive design pour les appareils mobiles */
 @media (max-width: 768px) {
+    /* Structure globale */
     .container {
         flex-direction: column;
     }
     
-    .sidebar {
-        width: 100%;
-        max-height: 150px;
-        overflow-y: auto;
+    /* En-tête et titre */
+    .chat-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.75rem;
     }
     
+    .chat-header h2 {
+        margin-bottom: 0.75rem;
+        font-size: 1.3rem;
+        width: 100%;
+    }
+    
+    /* Barre d'outils */
+    .toolbar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0.25rem 0;
+        margin-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .toolbar button {
+        font-size: 1.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0;
+    }
+    
+    /* Sidebar en version réduite */
+    .sidebar {
+        max-height: unset;
+        width: 100%;
+        padding: 0.75rem;
+    }
+    
+    /* Pour les infos de jeu en version mobile */
+    .game-selection {
+        margin-bottom: 0.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Sélecteur de modèles */
+    .model-selector {
+        flex: 1;
+        margin-top: 0.5rem;
+    }
+    
+    /* Liste de joueurs en version horizontale */
     .player-list {
         display: flex;
         flex-wrap: wrap;
@@ -515,18 +560,34 @@ header {
     
     .player {
         width: calc(50% - 0.5rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Zone de chat */
+    .chat-messages {
+        padding: 0.75rem;
     }
     
     .message {
-        max-width: 90%;
+        max-width: 95%;
     }
     
     .message-dm {
         width: 100%;
     }
     
-    .modal-content {
-        width: 95%;
-        padding: 1rem;
+    /* Zone de saisie */
+    .chat-input {
+        padding: 0.75rem;
+    }
+    
+    .chat-input input {
+        padding: 0.75rem;
+    }
+    
+    /* Ajustements pour les boutons du header */
+    .toolbar button#start-button {
+        color: #4caf50;
+        font-size: 1.6rem;
     }
 }
