@@ -154,7 +154,7 @@ Description: ${gameInfo.description}
 	
 	${gameInfo.campaignPrompt ? 'Règles et structure de la campagne:\n' + gameInfo.campaignPrompt : ''}
 	
-	RAPPEL: Génère UNIQUEMENT le contenu du message d'introduction, sans aucun texte méta ou explicatif autour.`;
+	RAPPEL: Génère UNIQUEMENT le contenu du message d'introduction, en francais, sans aucun texte méta ou explicatif autour.`;
 	}
     
     /**
