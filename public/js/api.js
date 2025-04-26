@@ -130,25 +130,32 @@ Description: ${gameInfo.description}
      * Crée un prompt d'initialisation de campagne
      */
     createInitializationPrompt(gameInfo) {
-        return `Tu es le Maître du Jeu (MJ) d'une nouvelle campagne de jeu de rôle de genre ${gameInfo.genre || 'fantastique'}.
-Ta tâche est de créer le message d'introduction qui va lancer la campagne "${gameInfo.title}".
-
-Description de la campagne:
-${gameInfo.description}
-
-Dans ce premier message, tu dois:
-1. Présenter le monde, son ambiance et ses spécificités principales
-2. Décrire la situation initiale dans laquelle se trouvent les personnages-joueurs
-3. Établir un contexte, une tension ou un objectif initial qui va motiver l'aventure
-4. Terminer par une question ouverte ou une situation qui demande une décision de la part des joueurs
-
-Le message doit être immersif, captivant et donner envie aux joueurs de plonger dans cet univers.
-Il doit utiliser un langage descriptif qui sollicite l'imagination et les sens (visuels, sonores, etc.).
-
-${gameInfo.campaignPrompt ? 'Règles et structure de la campagne:\n' + gameInfo.campaignPrompt : ''}
-
-Crée maintenant ce message d'introduction en respectant ces consignes.`;
-    }
+		return `Tu es le Maître du Jeu (MJ) d'une nouvelle campagne de jeu de rôle de genre ${gameInfo.genre || 'fantastique'}.
+	Ta tâche est de créer UNIQUEMENT le message d'introduction qui va lancer la campagne "${gameInfo.title}".
+	
+	Description de la campagne:
+	${gameInfo.description}
+	
+	Dans ce message, tu dois:
+	1. Présenter le monde, son ambiance et ses spécificités principales
+	2. Décrire la situation initiale dans laquelle se trouvent les personnages-joueurs
+	3. Établir un contexte, une tension ou un objectif initial qui va motiver l'aventure
+	4. Terminer par une question ouverte ou une situation qui demande une décision de la part des joueurs
+	
+	IMPORTANT:
+	- N'inclus PAS de texte introductif comme "Voici une introduction..." ou "Okay, here's an introduction..."
+	- N'inclus PAS de méta-commentaires ou d'instructions sur comment utiliser le texte
+	- N'inclus PAS de questions à moi (comme "Voulez-vous que je développe..." ou "Do you want me to...")
+	- Écris DIRECTEMENT le message d'introduction comme si tu étais déjà en train de le présenter aux joueurs
+	- Termine simplement par ta question aux joueurs, sans ajouter de commentaires supplémentaires
+	
+	Le message doit être immersif, captivant et donner envie aux joueurs de plonger dans cet univers.
+	Il doit utiliser un langage descriptif qui sollicite l'imagination et les sens (visuels, sonores, etc.).
+	
+	${gameInfo.campaignPrompt ? 'Règles et structure de la campagne:\n' + gameInfo.campaignPrompt : ''}
+	
+	RAPPEL: Génère UNIQUEMENT le contenu du message d'introduction, sans aucun texte méta ou explicatif autour.`;
+	}
     
     /**
      * Effectue un jet de dés
