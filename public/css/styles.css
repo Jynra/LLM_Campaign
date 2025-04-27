@@ -11,6 +11,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95rem;  /* Réduction générale de la taille des textes */
 }
 
 body {
@@ -26,6 +27,10 @@ header {
     color: white;
     padding: 1rem;
     text-align: center;
+}
+
+header h1 {
+    font-size: 1.8rem;  /* Taille ajustée pour le titre principal */
 }
 
 .container {
@@ -57,7 +62,7 @@ header {
 .model-selector label {
     display: block;
     margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;  /* Taille réduite */
 }
 
 .model-selector select {
@@ -67,6 +72,7 @@ header {
     border: none;
     background-color: var(--light-color);
     color: var(--dark-color);
+    font-size: 0.9rem;  /* Taille réduite */
 }
 
 .player-list {
@@ -95,8 +101,8 @@ header {
 }
 
 .player-avatar {
-    width: 30px;
-    height: 30px;
+    width: 28px;  /* Légèrement réduit */
+    height: 28px;  /* Légèrement réduit */
     border-radius: 50%;
     background-color: var(--accent-color);
     margin-right: 0.5rem;
@@ -104,6 +110,11 @@ header {
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    font-size: 0.8rem;  /* Taille réduite */
+}
+
+.player-name {
+    font-size: 0.9rem;  /* Taille réduite */
 }
 
 .active .player-avatar {
@@ -124,6 +135,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.chat-header h2 {
+    font-size: 1.4rem;  /* Taille ajustée */
 }
 
 .chat-messages {
@@ -163,12 +178,13 @@ header {
     font-style: italic;
     align-self: center;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;  /* Taille réduite */
 }
 
 .message-content {
     margin-top: 0.25rem;
     line-height: 1.4;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 .message-metadata {
@@ -177,8 +193,8 @@ header {
 }
 
 .message-avatar {
-    width: 24px;
-    height: 24px;
+    width: 22px;  /* Légèrement réduit */
+    height: 22px;  /* Légèrement réduit */
     border-radius: 50%;
     background-color: var(--accent-color);
     margin-right: 0.5rem;
@@ -186,16 +202,17 @@ header {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 0.75rem;  /* Taille réduite */
 }
 
 .message-sender {
     font-weight: bold;
     margin-right: 0.5rem;
+    font-size: 0.9rem;  /* Taille réduite */
 }
 
 .message-time {
-    font-size: 0.8rem;
+    font-size: 0.75rem;  /* Taille réduite */
     opacity: 0.8;
 }
 
@@ -212,6 +229,7 @@ header {
     border: 1px solid #ddd;
     border-radius: 4px;
     outline: none;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 .chat-input button {
@@ -222,6 +240,7 @@ header {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 .chat-input button:hover {
@@ -270,12 +289,14 @@ header {
 #start-modal h2 {
     color: var(--secondary-color);
     margin-bottom: 1rem;
+    font-size: 1.4rem;  /* Taille ajustée */
 }
 
 #start-modal label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
+    font-size: 0.9rem;  /* Taille réduite */
 }
 
 #start-modal select,
@@ -285,6 +306,7 @@ header {
     margin-bottom: 1rem;
     border-radius: 4px;
     border: 1px solid #ccc;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 #start-modal textarea {
@@ -295,6 +317,7 @@ header {
     border: 1px solid #ccc;
     min-height: 100px;
     resize: vertical;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 /* Modal pour les jets de dés */
@@ -322,12 +345,14 @@ header {
 .modal-content h2 {
     margin-bottom: 1rem;
     color: var(--secondary-color);
+    font-size: 1.4rem;  /* Taille ajustée */
 }
 
 .modal-content label {
     display: inline-block;
     width: 120px;
     margin-bottom: 0.5rem;
+    font-size: 0.9rem;  /* Taille réduite */
 }
 
 .modal-content input, 
@@ -337,6 +362,7 @@ header {
     border-radius: 4px;
     margin-bottom: 1rem;
     width: 100px;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 .modal-content br {
@@ -355,6 +381,7 @@ header {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 .modal-buttons button[type="submit"] {
@@ -393,6 +420,7 @@ header {
     margin-bottom: 1rem;
     text-align: center;
     border-radius: 4px;
+    font-size: 0.9rem;  /* Taille réduite */
 }
 
 .status-container {
@@ -411,7 +439,7 @@ header {
     padding: 0.75rem 1rem;
     border-radius: 4px;
     max-width: 300px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;  /* Taille réduite */
     opacity: 1;
     transition: opacity 0.5s;
 }
@@ -423,14 +451,14 @@ header {
 /* Indicateur de frappe */
 #typing-indicator {
     padding: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;  /* Taille réduite */
     color: #666;
     text-align: center;
 }
 
 /* Ajout pour l'indicateur de statut Ollama */
 .ollama-status {
-    font-size: 0.8rem;
+    font-size: 0.75rem;  /* Taille réduite */
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     margin-top: 0.5rem;
@@ -459,11 +487,13 @@ header {
 #welcome-modal h2 {
     color: var(--secondary-color);
     margin-bottom: 1rem;
+    font-size: 1.4rem;  /* Taille ajustée */
 }
 
 #welcome-modal p {
     margin-bottom: 1rem;
     line-height: 1.5;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 #welcome-modal ol {
@@ -473,6 +503,7 @@ header {
 
 #welcome-modal li {
     margin-bottom: 0.5rem;
+    font-size: 0.95rem;  /* Taille réduite */
 }
 
 #welcome-modal .modal-buttons {
@@ -487,7 +518,7 @@ header {
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;  /* Taille réduite */
     transition: background-color 0.2s;
 }
 
@@ -497,77 +528,141 @@ header {
 
 /* Style pour le panneau déroulant sur mobile */
 .mobile-only-button {
-	display: none; /* Masqué par défaut (desktop) */
-  }
+    display: none; /* Masqué par défaut (desktop) */
+}
   
-  .section-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-  }
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header h3 {
+    font-size: 1.1rem;  /* Taille ajustée */
+}
   
-  @media (max-width: 768px) {
-	  /* Vos styles existants pour mobile... */
-	  
-	  /* AJOUTEZ CES NOUVEAUX STYLES ICI */
-	  .mobile-only-button {
-		  display: block;
-		  background: none;
-		  border: none;
-		  color: white;
-		  font-size: 1.2rem;
-		  padding: 0.5rem;
-		  cursor: pointer;
-		  transition: transform 0.3s ease;
-	  }
-	  
-	  /* Style pour le bouton quand le panel est ouvert */
-	  .mobile-only-button.active {
-		  transform: rotate(180deg);
-	  }
-	  
-	  /* Le panneau est masqué par défaut sur mobile */
-	  .collapsible-panel {
-		  max-height: 0;
-		  overflow: hidden;
-		  transition: max-height 0.4s ease;
-	  }
-	  
-	  /* Lorsque le panneau est actif */
-	  .collapsible-panel.active {
-		  max-height: 500px; /* Ajustez selon la hauteur maximale du contenu */
-		  overflow-y: auto;
-	  }
-	  
-	  /* Ajustement pour la section joueurs */
-	  .player-list-section {
-		  margin-top: 1rem;
-		  border-top: 1px solid rgba(255, 255, 255, 0.1);
-		  padding-top: 0.5rem;
-	  }
-	  
-	  /* Cacher le titre h3 de Joueurs connectés en mobile si nécessaire */
-	  .player-list-section h3 {
-		  font-size: 0.9rem;
-		  margin-bottom: 0.5rem;
-	  }
-    /* Structure globale */
-    .container {
-        flex-direction: column;
+@media (max-width: 768px) {
+    /* Réduction supplémentaire des textes en mobile */
+    * {
+        font-size: 0.9rem;
     }
     
-    /* En-tête et titre */
+    /* Structure globale */
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+    
+    header {
+        position: static;
+        height: auto;
+        padding: 0.5rem;
+        z-index: 20;
+    }
+    
+    header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .container {
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        width: 100%;
+        padding: 0.5rem;
+        max-height: auto;
+        overflow: visible;
+    }
+    
+    /* S'assurer que la section "Campagne en cours" est visible */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0.25rem 0;
+    }
+    
+    .section-header h3 {
+        font-size: 1rem;
+        margin: 0;
+    }
+    
+    /* Styles pour le bouton mobile */
+    .mobile-only-button {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.1rem;
+        padding: 0.5rem;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    
+    /* Panel collapsible */
+    .collapsible-panel {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+    }
+    
+    .collapsible-panel.active {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    /* Section joueurs */
+    .player-list-section {
+        margin-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 0.5rem;
+    }
+    
+    .player-list-section h3 {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Liste de joueurs */
+    .player-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .player {
+        width: calc(50% - 0.5rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Conteneur de chat */
+    .chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        height: 0;
+        overflow: hidden;
+    }
+    
+    /* En-tête de chat */
     .chat-header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        padding: 0.5rem;
+        background-color: var(--primary-color);
+        position: static;
         z-index: 5;
     }
     
     .chat-header h2 {
-        margin-bottom: 0.75rem;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
         width: 100%;
     }
     
@@ -582,19 +677,52 @@ header {
     }
     
     .toolbar button {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         padding: 0.5rem 0.75rem;
         margin: 0;
     }
     
-    /* Sidebar en version réduite */
-    .sidebar {
-        max-height: unset;
-        width: 100%;
+    /* Zone de messages - Correction du scroll */
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
         padding: 0.75rem;
+        position: absolute;
+        top: 80px; /* Ajuster selon la hauteur de l'en-tête de chat */
+        bottom: 60px; /* Ajuster selon la hauteur de la zone de saisie */
+        left: 0;
+        right: 0;
+        background-color: white;
     }
     
-    /* Pour les infos de jeu en version mobile */
+    /* Styles de messages */
+    .message {
+        max-width: 95%;
+    }
+    
+    .message-dm {
+        width: 100%;
+    }
+    
+    /* Zone de saisie */
+    .chat-input {
+        padding: 0.5rem;
+        background-color: #f0f0f0;
+        border-top: 1px solid #ddd;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+    }
+    
+    .chat-input input {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Pour les infos de jeu */
     .game-selection {
         margin-bottom: 0.5rem;
         display: flex;
@@ -607,65 +735,9 @@ header {
         margin-top: 0.5rem;
     }
     
-    /* Liste de joueurs en version horizontale */
-    .player-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-    
-    .player {
-        width: calc(50% - 0.5rem);
-        margin-bottom: 0.25rem;
-    }
-    
-	.chat-container {
-        display: flex;
-        flex-direction: column;
-        height: calc(100vh - 150px); /* Hauteur ajustable selon votre en-tête */
-        position: relative;
-    }
-
-    /* Zone de chat */
-    .chat-messages {
-        flex: 1;
-        overflow-y: scroll;
-        padding: 0.75rem;
-        -webkit-overflow-scrolling: touch; /* Pour une meilleure inertie sur iOS */
-        position: absolute;
-        top: 60px; /* Ajustez en fonction de la hauteur de votre chat-header */
-        bottom: 70px; /* Ajustez en fonction de la hauteur de votre chat-input */
-        left: 0;
-        right: 0;
-    }
-    
-    .message {
-        max-width: 95%;
-    }
-    
-    .message-dm {
-        width: 100%;
-    }
-    
-    /* Zone de saisie */
-    .chat-input {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 10px;
-        background-color: #f0f0f0;
-        border-top: 1px solid #ddd;
-        z-index: 5;
-    }
-    
-    .chat-input input {
-        padding: 0.75rem;
-    }
-    
-    /* Ajustements pour les boutons du header */
+    /* Bouton de démarrage */
     .toolbar button#start-button {
         color: #4caf50;
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
 }
