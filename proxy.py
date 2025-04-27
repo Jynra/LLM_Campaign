@@ -13,7 +13,15 @@ from http import HTTPStatus
 
 # Configuration
 PORT = 9425
-OLLAMA_URL = "http://172.17.0.8:11434"  # URL vers Ollama sur le réseau Docker
+# Liste des URLs vers Ollama à essayer, en ordre de priorité
+OLLAMA_URLS = [
+    "http://172.17.0.8:11434",  # URL principale vers Ollama sur le réseau Docker
+    "http://172.17.0.4:11434",   # URL alternative en localhost
+    "http://localhost:11434"  # URL alternative pour Docker Desktop
+]
+
+# URL active pour Ollama, sera définie par la fonction test_ollama_connection
+OLLAMA_URL = None
 
 class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -117,24 +125,34 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404, f"File not found: {self.path}")
 
 def test_ollama_connection():
-    """Test de connexion à Ollama avant de démarrer le serveur"""
-    print(f"Tentative de connexion à Ollama sur {OLLAMA_URL}...")
-    try:
-        response = requests.get(f"{OLLAMA_URL}/api/tags")
-        if response.status_code == 200:
-            models = response.json().get('models', [])
-            model_names = [model.get('name') for model in models]
-            print(f"✅ Connexion à Ollama réussie! Modèles disponibles : {', '.join(model_names)}")
-            return True
-        else:
-            print(f"⚠️ Ollama répond mais avec un code d'erreur: {response.status_code}")
-            print(f"Réponse: {response.text}")
-            return False
-    except Exception as e:
-        print(f"⚠️ Impossible de se connecter à Ollama: {e}")
-        print(f"⚠️ Vérifiez que Ollama est en cours d'exécution sur {OLLAMA_URL}")
-        print("⚠️ Le serveur sera démarré, mais les fonctionnalités LLM ne seront pas disponibles")
-        return False
+    """Test de connexion à Ollama en essayant plusieurs URLs"""
+    global OLLAMA_URL
+    
+    for url in OLLAMA_URLS:
+        print(f"Tentative de connexion à Ollama sur {url}...")
+        try:
+            response = requests.get(f"{url}/api/tags", timeout=5)
+            if response.status_code == 200:
+                models = response.json().get('models', [])
+                model_names = [model.get('name') for model in models]
+                print(f"✅ Connexion à Ollama réussie sur {url}! Modèles disponibles : {', '.join(model_names)}")
+                OLLAMA_URL = url
+                return True
+            else:
+                print(f"⚠️ Ollama répond sur {url} mais avec un code d'erreur: {response.status_code}")
+                print(f"Réponse: {response.text}")
+        except Exception as e:
+            print(f"⚠️ Impossible de se connecter à Ollama sur {url}: {e}")
+            print(f"⚠️ Essai de l'URL suivante...")
+    
+    # Si on a essayé toutes les URLs sans succès
+    print("⚠️ Aucune connexion à Ollama n'a pu être établie.")
+    print("⚠️ Le serveur sera démarré, mais les fonctionnalités LLM ne seront pas disponibles")
+    
+    # Utiliser par défaut la première URL même si elle ne fonctionne pas
+    # (nécessaire pour que le code fonctionne même en mode démo)
+    OLLAMA_URL = OLLAMA_URLS[0]
+    return False
 
 def run_server():
     """Démarrer le serveur HTTP avec le proxy"""
@@ -154,6 +172,7 @@ def run_server():
     
     print(f"🚀 Serveur démarré sur le port {PORT}")
     print(f"📝 Accédez à l'application: http://localhost:{PORT}")
+    print(f"🔄 Ollama configuré sur: {OLLAMA_URL}")
     
     try:
         httpd.serve_forever()
