@@ -13,7 +13,7 @@ from http import HTTPStatus
 
 # Configuration
 PORT = 9425
-OLLAMA_URL = "http://localhost:11434/api/generate"  # URL vers Ollama sur le réseau Docker
+OLLAMA_URL = "http://host.docker.internal:11434"  # URL vers Ollama sur le réseau Docker
 
 class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
