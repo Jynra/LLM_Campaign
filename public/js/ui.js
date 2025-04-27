@@ -494,37 +494,41 @@ class UIManager {
      * Met à jour la liste des joueurs dans l'interface
      */
     updatePlayerList(players) {
-        const playerListElement = document.querySelector('.player-list');
-        const playersHeader = playerListElement.querySelector('h3');
-        
-        // Vider la liste des joueurs tout en gardant le titre
-        playerListElement.innerHTML = '';
-        playerListElement.appendChild(playersHeader);
-        
-        // Ajouter chaque joueur à la liste
-        players.forEach((player, index) => {
-            const playerDiv = document.createElement('div');
-            playerDiv.className = 'player';
-            if (index === this.currentPlayerIndex) {
-                playerDiv.classList.add('active');
-            }
-            
-            playerDiv.addEventListener('click', () => {
-                this.selectPlayer(index);
-            });
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'player-avatar';
-            avatarDiv.textContent = player.avatar;
-            
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'player-name';
-            nameDiv.textContent = player.getDisplayName ? player.getDisplayName() : `${player.name} (${player.character})`;
-            
-            playerDiv.appendChild(avatarDiv);
-            playerDiv.appendChild(nameDiv);
-            
-            playerListElement.appendChild(playerDiv);
-        });
-    }
+		// Chercher l'élément avec la nouvelle structure
+		const playerListElement = document.querySelector('.player-list');
+		
+		if (!playerListElement) {
+			console.error("Élément player-list introuvable");
+			return;
+		}
+		
+		// Vider la liste des joueurs
+		playerListElement.innerHTML = '';
+		
+		// Ajouter chaque joueur à la liste
+		players.forEach((player, index) => {
+			const playerDiv = document.createElement('div');
+			playerDiv.className = 'player';
+			if (index === this.currentPlayerIndex) {
+				playerDiv.classList.add('active');
+			}
+			
+			playerDiv.addEventListener('click', () => {
+				this.selectPlayer(index);
+			});
+			
+			const avatarDiv = document.createElement('div');
+			avatarDiv.className = 'player-avatar';
+			avatarDiv.textContent = player.avatar;
+			
+			const nameDiv = document.createElement('div');
+			nameDiv.className = 'player-name';
+			nameDiv.textContent = player.getDisplayName ? player.getDisplayName() : `${player.name} (${player.character})`;
+			
+			playerDiv.appendChild(avatarDiv);
+			playerDiv.appendChild(nameDiv);
+			
+			playerListElement.appendChild(playerDiv);
+		});
+	}
 }
