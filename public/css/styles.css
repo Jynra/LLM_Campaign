@@ -548,12 +548,12 @@ header h1 {
     }
     
     /* Structure de base */
-    body {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        overflow: hidden;
-    }
+	body {
+	    display: flex;
+	    flex-direction: column;
+	    height: 100%;
+	    overflow: auto !important; /* Changé de 'hidden' à 'auto' */
+	}
     
     header {
         height: auto;
@@ -671,14 +671,16 @@ header h1 {
         margin: 0;
     }
     
-    /* Zone de messages - SOLUTION SCROLL */
-    .chat-messages {
-        flex: 1;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-        padding: 0.75rem;
-        height: calc(100vh - 250px); /* Hauteur calculée pour permettre le défilement */
-    }
+    /* Zone de messages - SOLUTION SCROLL CORRIGÉE */
+	.chat-messages {
+	    position: static !important; /* Revenir à un positionnement normal */
+	    flex: 1;
+	    overflow-y: auto !important; /* Forcer le scroll */
+	    -webkit-overflow-scrolling: touch;
+	    padding: 0.75rem;
+	    height: calc(100vh - 250px); /* Hauteur calculée pour permettre le défilement */
+	    margin-bottom: 60px; /* Espace pour la zone de saisie fixe */
+	}
     
     /* Styles de messages */
     .message {
