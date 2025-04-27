@@ -89,42 +89,49 @@ class ApiClient {
      * Crée un prompt pour le Maître du Jeu
      */
     createDMPrompt(messageHistory, currentMessage, gameInfo) {
-        // Construire l'introduction
-        let prompt = `${gameInfo.campaignPrompt || ''}
-
-Tu es le Maître du Jeu (MJ) d'une campagne de jeu de rôle se déroulant dans un univers ${gameInfo.genre || 'fantastique'}. 
-Ton rôle est de décrire le monde, les situations et de réagir aux actions des joueurs.
-
-Voici quelques informations sur la campagne:
-Titre: ${gameInfo.title}
-Description: ${gameInfo.description}
-
-`;
-
-        // Ajouter l'historique des messages récents
-        prompt += "HISTORIQUE RÉCENT DE LA CONVERSATION:\n\n";
-        
-        // Limiter le nombre de messages pour éviter de dépasser les limites du LLM
-        const recentMessages = messageHistory.slice(-10);
-        
-        recentMessages.forEach(msg => {
-            if (msg.type === 'dm') {
-                prompt += `MJ: ${msg.content}\n\n`;
-            } else if (msg.type === 'player') {
-                prompt += `${msg.sender} (${msg.character || 'Joueur'}): ${msg.content}\n\n`;
-            } else if (msg.type === 'system') {
-                prompt += `[Système: ${msg.content}]\n\n`;
-            }
-        });
-        
-        // Ajouter le message actuel
-        prompt += `${currentMessage.sender} (${currentMessage.character || 'Joueur'}): ${currentMessage.content}\n\n`;
-        
-        // Ajouter les instructions finales
-        prompt += "En tant que Maître du Jeu, comment réponds-tu à cette action ? Décris ce qui se passe ensuite de manière immersive et captivante.";
-        
-        return prompt;
-    }
+		// Construire un prompt plus structuré
+		let prompt = `${gameInfo.campaignPrompt || ''}
+	
+	Tu es le Maître du Jeu (MJ) d'une campagne de jeu de rôle se déroulant dans un univers ${gameInfo.genre || 'fantastique'}. 
+	Ton rôle est de créer une expérience cohérente, de décrire le monde, et de réagir aux actions des joueurs.
+	
+	# INFORMATIONS SUR LA CAMPAGNE
+	Titre: ${gameInfo.title}
+	Description: ${gameInfo.description}
+	Genre: ${gameInfo.genre || 'fantasy'}
+	
+	# DIRECTIVES IMPORTANTES
+	- Maintiens la cohérence narrative en tout temps
+	- Souviens-toi des actions passées des joueurs et leurs conséquences
+	- Conserve les noms des personnages, lieux et objets déjà mentionnés
+	- Développe progressivement l'intrigue en fonction des choix des joueurs
+	
+	`;
+	
+		// Ajouter l'historique des messages récents
+		prompt += "# HISTORIQUE RÉCENT DE LA CONVERSATION:\n\n";
+		
+		// Limiter le nombre de messages pour éviter de dépasser les limites du LLM
+		const recentMessages = messageHistory.slice(-15);
+		
+		recentMessages.forEach(msg => {
+			if (msg.type === 'dm') {
+				prompt += `MJ: ${msg.content}\n\n`;
+			} else if (msg.type === 'player') {
+				prompt += `${msg.sender} (${msg.character || 'Joueur'}): ${msg.content}\n\n`;
+			} else if (msg.type === 'system') {
+				prompt += `[Système: ${msg.content}]\n\n`;
+			}
+		});
+		
+		// Ajouter le message actuel
+		prompt += `# MESSAGE ACTUEL\n${currentMessage.sender} (${currentMessage.character || 'Joueur'}): ${currentMessage.content}\n\n`;
+		
+		// Ajouter les instructions finales
+		prompt += "En tant que Maître du Jeu, comment réponds-tu à cette action ? Décris ce qui se passe ensuite de manière immersive et captivante, en maintenant la continuité avec les interactions précédentes.";
+		
+		return prompt;
+	}
     
     /**
      * Crée un prompt d'initialisation de campagne
