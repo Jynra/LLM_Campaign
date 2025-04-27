@@ -152,8 +152,17 @@ class ChatManager {
      * Fait défiler la fenêtre de chat vers le bas
      */
     scrollToBottom() {
-        this.chatElement.scrollTop = this.chatElement.scrollHeight;
-    }
+		// Assurez-vous que le scroll fonctionne correctement
+		if (this.chatElement) {
+			// Option 1 : scroll standard
+			this.chatElement.scrollTop = this.chatElement.scrollHeight;
+			
+			// Option 2 : forcer le scroll avec un délai (utile sur mobile)
+			setTimeout(() => {
+				this.chatElement.scrollTop = this.chatElement.scrollHeight;
+			}, 100);
+		}
+	}
     
     /**
      * Envoie un message de joueur
