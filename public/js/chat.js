@@ -179,79 +179,84 @@ class ChatManager {
 	 * Envoie un message de joueur
 	 */
 	async sendPlayerMessage(content) {
-		console.log("=== ENVOI MESSAGE JOUEUR ===");
-		console.log("Content:", content);
+	    console.log("=== ENVOI MESSAGE JOUEUR ===");
+	    console.log("Content:", content);
+	
+	    if (!content.trim()) {
+	        console.log("Message vide, annulation");
+	        return null;
+	    }
+	
+	    // Ajouter le message du joueur à l'interface
+	    const playerMessage = this.addMessage(
+	        content,
+	        this.currentPlayer.name,
+	        this.currentPlayer.avatar,
+	        CONFIG.ui.messageTypes.PLAYER
+	    );
+	
+	    try {
+	        // Afficher un indicateur de chargement
+	        this.showTypingIndicator();
 		
-		if (!content.trim()) {
-			console.log("Message vide, annulation");
-			return null;
-		}
+	        console.log("Envoi du message à apiClient.sendMessage");
+	        // Envoyer le message à l'API pour traitement par le LLM
+	        // MODIFICATION ICI : passage de this.worldState en troisième paramètre
+	        const response = await apiClient.sendMessage(
+	            this.currentGame.id, 
+	            playerMessage,
+	            this.worldState  // Ajout de cette ligne
+	        );
 		
-		// Ajouter le message du joueur à l'interface
-		const playerMessage = this.addMessage(
-			content,
-			this.currentPlayer.name,
-			this.currentPlayer.avatar,
-			CONFIG.ui.messageTypes.PLAYER
-		);
+	        // Supprimer l'indicateur de chargement
+	        this.removeTypingIndicator();
 		
-		try {
-			// Afficher un indicateur de chargement
-			this.showTypingIndicator();
-			
-			console.log("Envoi du message à apiClient.sendMessage");
-			// Envoyer le message à l'API pour traitement par le LLM
-			const response = await apiClient.sendMessage(this.currentGame.id, playerMessage);
-			
-			// Supprimer l'indicateur de chargement
-			this.removeTypingIndicator();
-			
-			console.log("Réponse reçue du MJ:", response.content.substring(0, 100) + "...");
-			
-			// Ajouter la réponse du MJ
-			this.addMessage(
-				response.content,
-				CONFIG.dm.name,
-				CONFIG.dm.avatar,
-				CONFIG.ui.messageTypes.DM
-			);
-			
-			// Vérification de WorldState
-			console.log("Vérification de this.worldState:", this.worldState ? "existe" : "n'existe pas");
-			
-			// Extraire les informations du monde à partir de la réponse
-			if (this.worldState) {
-				console.log("Début de l'extraction des informations...");
-				try {
-					const extractionText = await apiClient.extractWorldInfo(playerMessage, response.content);
-					console.log("Résultat de l'extraction:", extractionText ? "reçu" : "null");
-					if (extractionText) {
-						console.log('Contenu de l\'extraction:', extractionText);
-						const processed = this.worldState.processExtraction(extractionText);
-						console.log('Traitement réussi:', processed);
-					}
-				} catch (extractError) {
-					console.error("ERREUR pendant l'extraction:", extractError);
-				}
-			} else {
-				console.warn("worldState n'est pas disponible, extraction ignorée");
-			}
-		} catch (error) {
-			console.error('Error sending message:', error);
-			
-			// Supprimer l'indicateur de chargement
-			this.removeTypingIndicator();
-			
-			// Ajouter un message d'erreur
-			this.addMessage(
-				"Il semble y avoir un problème de communication avec le Maître du Jeu...",
-				"Système",
-				"S",
-				CONFIG.ui.messageTypes.SYSTEM
-			);
-		}
+	        console.log("Réponse reçue du MJ:", response.content.substring(0, 100) + "...");
 		
-		return playerMessage;
+	        // Ajouter la réponse du MJ
+	        this.addMessage(
+	            response.content,
+	            CONFIG.dm.name,
+	            CONFIG.dm.avatar,
+	            CONFIG.ui.messageTypes.DM
+	        );
+		
+	        // Vérification de WorldState
+	        console.log("Vérification de this.worldState:", this.worldState ? "existe" : "n'existe pas");
+		
+	        // Extraire les informations du monde à partir de la réponse
+	        if (this.worldState) {
+	            console.log("Début de l'extraction des informations...");
+	            try {
+	                const extractionText = await apiClient.extractWorldInfo(playerMessage, response.content);
+	                console.log("Résultat de l'extraction:", extractionText ? "reçu" : "null");
+	                if (extractionText) {
+	                    console.log('Contenu de l\'extraction:', extractionText);
+	                    const processed = this.worldState.processExtraction(extractionText);
+	                    console.log('Traitement réussi:', processed);
+	                }
+	            } catch (extractError) {
+	                console.error("ERREUR pendant l'extraction:", extractError);
+	            }
+	        } else {
+	            console.warn("worldState n'est pas disponible, extraction ignorée");
+	        }
+	    } catch (error) {
+	        console.error('Error sending message:', error);
+		
+	        // Supprimer l'indicateur de chargement
+	        this.removeTypingIndicator();
+		
+	        // Ajouter un message d'erreur
+	        this.addMessage(
+	            "Il semble y avoir un problème de communication avec le Maître du Jeu...",
+	            "Système",
+	            "S",
+	            CONFIG.ui.messageTypes.SYSTEM
+	        );
+	    }
+	
+	    return playerMessage;
 	}
     
     /**

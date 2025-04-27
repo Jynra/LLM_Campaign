@@ -88,8 +88,8 @@ class ApiClient {
     /**
      * Crée un prompt pour le Maître du Jeu
      */
-    createDMPrompt(messageHistory, currentMessage, gameInfo) {
-		// Construire un prompt plus structuré
+    createDMPrompt(messageHistory, currentMessage, gameInfo, worldState = null) {
+		// Construire l'introduction
 		let prompt = `${gameInfo.campaignPrompt || ''}
 	
 	Tu es le Maître du Jeu (MJ) d'une campagne de jeu de rôle se déroulant dans un univers ${gameInfo.genre || 'fantastique'}. 
@@ -107,6 +107,16 @@ class ApiClient {
 	- Développe progressivement l'intrigue en fonction des choix des joueurs
 	
 	`;
+	
+		// Ajouter l'état du monde s'il est disponible
+		if (worldState) {
+			const worldSummary = worldState.getSummary();
+			if (worldSummary) {
+				prompt += "# ÉTAT ACTUEL DU MONDE\n";
+				prompt += worldSummary;
+				prompt += "\n";
+			}
+		}
 	
 		// Ajouter l'historique des messages récents
 		prompt += "# HISTORIQUE RÉCENT DE LA CONVERSATION:\n\n";
@@ -128,7 +138,7 @@ class ApiClient {
 		prompt += `# MESSAGE ACTUEL\n${currentMessage.sender} (${currentMessage.character || 'Joueur'}): ${currentMessage.content}\n\n`;
 		
 		// Ajouter les instructions finales
-		prompt += "En tant que Maître du Jeu, comment réponds-tu à cette action ? Décris ce qui se passe ensuite de manière immersive et captivante, en maintenant la continuité avec les interactions précédentes.";
+		prompt += "En tant que Maître du Jeu, comment réponds-tu à cette action ? Décris ce qui se passe ensuite de manière immersive et captivante, en maintenant la cohérence avec les interactions précédentes et l'état du monde déjà établi. Assure-toi de rester cohérent avec les personnages, lieux et objets déjà mentionnés.";
 		
 		return prompt;
 	}
@@ -634,45 +644,48 @@ RULE SHEET:
     }
     
     /**
-     * Envoie un message au LLM et récupère la réponse
-     */
-    async sendMessage(gameId, message) {
-        const gameInfo = this.getGameInfo(gameId);
-        const messageHistory = this.getMessageHistory(gameId);
-        
-        // Cas spécial pour l'initialisation de la campagne
-        if (message.content.includes("Initialise cette nouvelle campagne") && message.type === 'system') {
-            const initPrompt = this.createInitializationPrompt(gameInfo);
-            const dmResponse = await this.sendToOllama(initPrompt);
-            
-            return {
-                content: dmResponse,
-                sender: 'Maître du Jeu',
-                avatar: 'M',
-                type: 'dm',
-                timestamp: new Date().toISOString()
-            };
-        }
-        
-        // Cas normal pour les autres messages
-        // Ajouter le message actuel à l'historique pour le prompt
-        const combinedHistory = [...messageHistory, message];
-        
-        // Créer le prompt pour le LLM
-        const prompt = this.createDMPrompt(messageHistory, message, gameInfo);
-        
-        // Envoyer la requête à Ollama
-        const dmResponse = await this.sendToOllama(prompt);
-        
-        // Créer la réponse du Maître du Jeu
-        return {
-            content: dmResponse,
-            sender: 'Maître du Jeu',
-            avatar: 'M',
-            type: 'dm',
-            timestamp: new Date().toISOString()
-        };
-    }
+	 * Envoie un message au LLM et récupère la réponse
+	 */
+	async sendMessage(gameId, message, worldState = null) {
+	    const gameInfo = this.getGameInfo(gameId);
+	    const messageHistory = this.getMessageHistory(gameId);
+	
+	    // Cas spécial pour l'initialisation de la campagne
+	    if (message.content.includes("Initialise cette nouvelle campagne") && message.type === 'system') {
+	        const initPrompt = this.createInitializationPrompt(gameInfo);
+	        const dmResponse = await this.sendToOllama(initPrompt);
+		
+	        return {
+	            content: dmResponse,
+	            sender: 'Maître du Jeu',
+	            avatar: 'M',
+	            type: 'dm',
+	            timestamp: new Date().toISOString()
+	        };
+	    }
+	
+	    // Cas normal pour les autres messages
+	    // Ajouter le message actuel à l'historique pour le prompt
+	    const combinedHistory = [...messageHistory, message];
+	
+	    // Créer le prompt pour le LLM (avec l'état du monde si disponible)
+	    const prompt = this.createDMPrompt(messageHistory, message, gameInfo, worldState);
+	
+	    // Pour débug, log le prompt complet
+	    console.log("Prompt complet envoyé au LLM:", prompt);
+	
+	    // Envoyer la requête à Ollama
+	    const dmResponse = await this.sendToOllama(prompt);
+	
+	    // Créer la réponse du Maître du Jeu
+	    return {
+	        content: dmResponse,
+	        sender: 'Maître du Jeu',
+	        avatar: 'M',
+	        type: 'dm',
+	        timestamp: new Date().toISOString()
+	    };
+	}
     
     /**
      * Change le modèle Ollama à utiliser
@@ -689,7 +702,7 @@ RULE SHEET:
 		console.log("=== EXTRACT WORLD INFO APPELÉ ===");
     	console.log("Player message:", playerMessage.content.substring(0, 50) + "...");
     	console.log("DM response:", dmResponse.substring(0, 50) + "...");
-		
+
 	    const extractionPrompt = `
 	Tu es un assistant d'analyse pour jeu de rôle. Analyse cet échange entre un joueur et le Maître du Jeu (MJ).
 
