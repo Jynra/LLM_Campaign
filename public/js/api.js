@@ -681,6 +681,41 @@ RULE SHEET:
         this.ollamaModel = modelName;
         console.log(`Modèle Ollama changé pour: ${modelName}`);
     }
+
+	/**
+	 * Extrait les informations importantes d'une réponse du MJ
+	 */
+	async extractWorldInfo(playerMessage, dmResponse) {
+		console.log("=== EXTRACT WORLD INFO APPELÉ ===");
+    	console.log("Player message:", playerMessage.content.substring(0, 50) + "...");
+    	console.log("DM response:", dmResponse.substring(0, 50) + "...");
+		
+	    const extractionPrompt = `
+	Tu es un assistant d'analyse pour jeu de rôle. Analyse cet échange entre un joueur et le Maître du Jeu (MJ).
+
+	JOUEUR: ${playerMessage.content}
+
+	MJ: ${dmResponse}
+
+	Extrais UNIQUEMENT les informations suivantes au format demandé (n'invente rien, n'inclus que ce qui est mentionné explicitement):
+
+	LIEUX: [liste des lieux mentionnés avec une brève description s'il y en a]
+	PNJ: [liste des personnages non-joueurs mentionnés avec une brève description s'il y en a]
+	QUÊTES: [liste des quêtes ou objectifs mentionnés avec leur statut s'il y en a]
+	ÉVÉNEMENTS: [liste des événements importants qui viennent de se produire s'il y en a]
+	OBJETS: [liste des objets importants mentionnés et à qui ils appartiennent s'il y en a]
+
+	Ne mentionne que les éléments qui sont clairement présents dans l'échange. Si une catégorie est vide, écris simplement "Aucun".
+	`;
+
+	    try {
+	        const extractionResponse = await this.sendToOllama(extractionPrompt);
+	        return extractionResponse;
+	    } catch (error) {
+	        console.error('Erreur lors de l\'extraction des informations:', error);
+	        return null;
+	    }
+	}
 }
 
 // Créer une instance du client API
