@@ -6,19 +6,81 @@
 const chatManager = new ChatManager();
 const uiManager = new UIManager();
 
+// Fonction pour gérer le panneau déroulant
+function setupCollapsiblePanel() {
+	const toggleButton = document.getElementById('toggle-sidebar-panel');
+	const panel = document.getElementById('sidebar-panel');
+	
+	if (toggleButton && panel) {
+	  // Vérifier si on est sur mobile pour initialiser l'état
+	  if (window.innerWidth <= 768) {
+		panel.classList.remove('active');
+	  } else {
+		// Sur desktop, toujours visible
+		panel.classList.add('active');
+	  }
+	  
+	  toggleButton.addEventListener('click', function() {
+		panel.classList.toggle('active');
+		toggleButton.classList.toggle('active');
+	  });
+	}
+}
+  
+// Amélioration de la fonction scrollToBottom pour mobile
+function improvedScrollToBottom() {
+	const chatElement = document.getElementById('chat-messages');
+	if (chatElement) {
+	  chatElement.scrollTop = chatElement.scrollHeight;
+	  
+	  // Force le scroll avec un délai (utile sur mobile)
+	  setTimeout(() => {
+		chatElement.scrollTop = chatElement.scrollHeight;
+	  }, 100);
+	}
+}
+
 // Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', () => {
-    // Vérifier si la modale de bienvenue a déjà été affichée
-    const welcomeShown = localStorage.getItem('welcomeShown');
-    if (!welcomeShown) {
-        showWelcomeModal();
-    }
-    
-    // Initialiser l'application
-    initializeApp();
-    
-    // Vérifier si Ollama est disponible
-    checkOllamaConnection();
+	// Vérifier si la modale de bienvenue a déjà été affichée
+	const welcomeShown = localStorage.getItem('welcomeShown');
+	if (!welcomeShown) {
+	  showWelcomeModal();
+	}
+	
+	// Initialiser l'application
+	initializeApp();
+	
+	// Vérifier si Ollama est disponible
+	checkOllamaConnection();
+	
+	// Configuration du panneau déroulant
+	setupCollapsiblePanel();
+	
+	// Configurer l'observateur pour le scroll automatique
+	const chatContainer = document.getElementById('chat-messages');
+	if (chatContainer) {
+	  const observer = new MutationObserver(function(mutations) {
+		improvedScrollToBottom();
+	  });
+	  
+	  observer.observe(chatContainer, { 
+		childList: true,
+		subtree: true
+	  });
+	}
+	
+	// Gérer le redimensionnement de la fenêtre
+	window.addEventListener('resize', function() {
+	  const panel = document.getElementById('sidebar-panel');
+	  if (window.innerWidth > 768 && panel) {
+		panel.classList.add('active');
+	  } else if (window.innerWidth <= 768 && panel) {
+		if (!document.getElementById('toggle-sidebar-panel').classList.contains('active')) {
+		  panel.classList.remove('active');
+		}
+	  }
+	});
 });
 
 /**
@@ -51,6 +113,12 @@ async function initializeApp() {
             playerObjects,
             messageObjects
         );
+        
+        // Stockage global du jeu pour permettre la réinitialisation
+        window.currentGameData = {
+            gameInfo: gameInfo,
+            players: playerObjects
+        };
         
         // Sélectionner le joueur actuel (premier joueur pour la démo)
         const currentPlayer = playerObjects[0];

@@ -42,47 +42,223 @@ class UIManager {
     }
     
     /**
-     * Configure les écouteurs d'événements
-     */
-    setupEventListeners() {
-        // Envoi de message
-        this.sendButton.addEventListener('click', () => this.handleSendMessage());
-        this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.handleSendMessage();
-            }
-        });
-        
-        // Jets de dés
-        this.diceButton.addEventListener('click', () => this.showDiceRollModal());
-        
-        // Carte (à implémenter)
-        this.mapButton.addEventListener('click', () => {
-            console.log('Map button clicked - functionality not implemented');
-            // Implémentation future
-        });
-        
-        // Effacer la conversation
-        this.clearButton.addEventListener('click', () => {
-            this.chatManager.clearChat();
-        });
-        
-        // Paramètres (à implémenter)
-        this.settingsButton.addEventListener('click', () => {
-            console.log('Settings button clicked - functionality not implemented');
-            // Implémentation future
-        });
-        
-        // Sélection du personnage
-        document.querySelectorAll('.player').forEach((playerEl, index) => {
-            if (index < this.demoPlayers.length) {
-                playerEl.addEventListener('click', () => {
-                    this.selectPlayer(index);
-                });
-            }
-        });
-    }
+	 * Configure les écouteurs d'événements
+	 */
+	setupEventListeners() {
+		// Envoi de message
+		this.sendButton.addEventListener('click', () => this.handleSendMessage());
+		this.messageInput.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') {
+				this.handleSendMessage();
+			}
+		});
+		
+		// Bouton de démarrage de campagne
+		this.startButton = document.getElementById('start-button');
+		this.startButton.addEventListener('click', () => this.showStartCampaignModal());
+		
+		// Jets de dés
+		this.diceButton.addEventListener('click', () => this.showDiceRollModal());
+		
+		// Carte (à implémenter)
+		this.mapButton.addEventListener('click', () => {
+			console.log('Map button clicked - functionality not implemented');
+			// Implémentation future
+		});
+		
+		// Effacer la conversation
+		this.clearButton.addEventListener('click', () => {
+			this.chatManager.clearChat();
+		});
+		
+		// Paramètres (à implémenter)
+		this.settingsButton.addEventListener('click', () => {
+			console.log('Settings button clicked - functionality not implemented');
+			// Implémentation future
+		});
+		
+		// Sélection du personnage
+		document.querySelectorAll('.player').forEach((playerEl, index) => {
+			if (index < this.demoPlayers.length) {
+				playerEl.addEventListener('click', () => {
+					this.selectPlayer(index);
+				});
+			}
+		});
+		
+		// Configuration du modal de démarrage de campagne
+		const startModal = document.getElementById('start-modal');
+		if (startModal) {
+			// Fermer le modal en cliquant en dehors
+			startModal.addEventListener('click', (e) => {
+				if (e.target === startModal) {
+					startModal.style.display = 'none';
+				}
+			});
+			
+			// Bouton annuler
+			const cancelButton = document.getElementById('start-cancel');
+			if (cancelButton) {
+				cancelButton.addEventListener('click', () => {
+					startModal.style.display = 'none';
+				});
+			}
+			
+			// Formulaire de démarrage de campagne
+			const startForm = document.getElementById('start-form');
+			if (startForm) {
+				startForm.addEventListener('submit', (e) => {
+					e.preventDefault();
+					this.handleStartCampaign();
+				});
+			}
+		}
+		
+		// Écouter l'événement de réinitialisation du jeu
+		document.addEventListener('game:reset', (event) => {
+			console.log('Événement de réinitialisation reçu:', event.detail);
+			
+			// Mettre à jour l'interface avec le nouveau jeu
+			const game = event.detail.game;
+			const player = event.detail.player;
+			
+			// Mettre à jour le titre de la campagne
+			document.querySelector('.chat-header h2').textContent = game.title;
+			document.getElementById('current-campaign').textContent = game.title;
+			
+			// Mettre à jour la liste des joueurs
+			this.updatePlayerList(game.players);
+			
+			// Réinitialiser le joueur actif
+			this.currentPlayerIndex = 0;
+			this.selectPlayer(0, false); // Ne pas ajouter de message système lors de la réinitialisation
+			
+			// Afficher un message de notification
+			this.showNotification("Le jeu a été réinitialisé. Une nouvelle aventure commence!");
+		});
+	}
     
+	/**
+	 * Affiche la fenêtre modale pour démarrer une nouvelle campagne
+	 */
+	showStartCampaignModal() {
+	    const modal = document.getElementById('start-modal');
+	    if (modal) {
+	        modal.style.display = 'flex';
+	    }
+	}
+	
+	/**
+	 * Gère le démarrage d'une nouvelle campagne
+	 */
+	async handleStartCampaign() {
+	    // Récupérer les informations du formulaire
+	    const campaignName = document.getElementById('campaign-name').value;
+	    const campaignGenre = document.getElementById('campaign-genre').value;
+	    const campaignPrompt = document.getElementById('campaign-prompt').value;
+	
+	    // Masquer le modal
+	    const modal = document.getElementById('start-modal');
+	    if (modal) {
+	        modal.style.display = 'none';
+	    }
+	
+	    // Afficher un message de chargement
+	    this.chatManager.addMessage(
+	        "Création de la nouvelle campagne en cours...",
+	        "Système",
+	        "S",
+	        CONFIG.ui.messageTypes.SYSTEM
+	    );
+	
+	    try {
+	        // D'abord, réinitialiser complètement le jeu (comme le bouton corbeille)
+	        // Récupérer un nouveau jeu "vierge" à partir de l'API
+	        const gameId = this.chatManager.currentGame.id;
+	        const newGameInfo = apiClient.getGameInfo(gameId);
+	        const newPlayers = apiClient.getPlayersList(gameId).map(player => Player.fromJSON(player));
+		
+	        // Créer un nouvel objet de jeu
+	        const newGame = new Game(
+	            newGameInfo.id,
+	            campaignName, // Utiliser le nom de la nouvelle campagne
+	            campaignPrompt, // Utiliser la description fournie
+	            newPlayers,
+	            [] // Pas de messages initiaux
+	        );
+		
+	        // Mettre à jour le genre
+	        newGame.genre = campaignGenre;
+		
+	        // Mettre à jour le jeu actuel
+	        this.chatManager.currentGame = newGame;
+		
+	        // Réinitialiser le joueur actuel (prendre le premier joueur par défaut)
+	        this.chatManager.currentPlayer = newPlayers[0];
+	        this.currentPlayerIndex = 0;
+		
+	        // Effacer l'historique des messages et supprimer le stockage local
+	        this.chatManager.messageHistory = [];
+	        localStorage.removeItem(`${this.chatManager.localStorageKey}_${gameId}`);
+		
+	        // Mettre à jour l'interface
+	        document.querySelector('.chat-header h2').textContent = campaignName;
+	        document.getElementById('current-campaign').textContent = campaignName;
+	        this.updatePlayerList(newPlayers);
+	        this.chatManager.refreshChatDisplay();
+		
+	        // Créer un message de demande d'initialisation pour le LLM
+	        const initMessage = {
+	            content: `Initialise cette nouvelle campagne "${campaignName}" (genre: ${campaignGenre}). 
+	Crée un message d'introduction qui présente le monde, l'ambiance et la situation initiale des personnages.
+	${campaignPrompt}`,
+	            sender: "Système",
+	            avatar: "S",
+	            type: CONFIG.ui.messageTypes.SYSTEM
+	        };
+		
+	        // Afficher un indicateur de chargement
+	        this.chatManager.showTypingIndicator();
+		
+	        // Envoyer la demande au LLM
+	        const response = await apiClient.sendMessage(this.chatManager.currentGame.id, initMessage);
+		
+	        // Supprimer l'indicateur de chargement
+	        this.chatManager.removeTypingIndicator();
+		
+	        // Ajouter la réponse du MJ
+	        this.chatManager.addMessage(
+	            response.content,
+	            CONFIG.dm.name,
+	            CONFIG.dm.avatar,
+	            CONFIG.ui.messageTypes.DM
+	        );
+		
+	        // Sauvegarder les messages
+	        this.chatManager.saveMessageHistory();
+		
+	        // Déclencher un événement de réinitialisation pour informer d'autres composants
+	        const resetEvent = new CustomEvent('game:reset', { 
+	            detail: { game: newGame, player: this.chatManager.currentPlayer } 
+	        });
+	        document.dispatchEvent(resetEvent);
+		
+	        // Afficher une notification de succès
+	        this.showNotification(`Campagne "${campaignName}" démarrée avec succès!`);
+		
+	    } catch (error) {
+	        console.error('Erreur lors du démarrage de la campagne:', error);
+		
+	        // Afficher un message d'erreur
+	        this.chatManager.addMessage(
+	            "Erreur lors de la création de la campagne. Veuillez réessayer.",
+	            "Système",
+	            "S",
+	            CONFIG.ui.messageTypes.SYSTEM
+	        );
+	    }
+	}
+
     /**
      * Gère l'envoi d'un message
      */
@@ -114,30 +290,74 @@ class UIManager {
     }
     
     /**
-     * Sélectionne un joueur pour l'utilisateur actuel
-     */
-    selectPlayer(index) {
-        // Mettre à jour l'index du joueur actuel
-        this.currentPlayerIndex = index;
-        this.chatManager.currentPlayer = this.demoPlayers[index];
-        
-        // Mettre à jour l'interface
-        document.querySelectorAll('.player').forEach((el, i) => {
-            if (i === index) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
-            }
-        });
-        
-        // Afficher un message dans le chat
-        this.chatManager.addMessage(
-            `Vous contrôlez maintenant ${this.demoPlayers[index].name} (${this.demoPlayers[index].character})`,
-            'Système',
-            'S',
-            CONFIG.ui.messageTypes.SYSTEM
-        );
-    }
+	 * Sélectionne un joueur pour l'utilisateur actuel
+	 * @param {number} index - Index du joueur à sélectionner
+	 * @param {boolean} showMessage - Afficher un message dans le chat (défaut: true)
+	 */
+	selectPlayer(index, showMessage = true) {
+	    // Mettre à jour l'index du joueur actuel
+	    this.currentPlayerIndex = index;
+	    this.chatManager.currentPlayer = this.demoPlayers[index];
+	
+	    // Mettre à jour l'interface
+	    document.querySelectorAll('.player').forEach((el, i) => {
+	        if (i === index) {
+	            el.classList.add('active');
+	        } else {
+	            el.classList.remove('active');
+	        }
+	    });
+	
+	    // Afficher un message dans le chat si demandé
+	    if (showMessage) {
+	        this.chatManager.addMessage(
+	            `Vous contrôlez maintenant ${this.demoPlayers[index].name} (${this.demoPlayers[index].character})`,
+	            'Système',
+	            'S',
+	            CONFIG.ui.messageTypes.SYSTEM
+	        );
+	    }
+	}
+
+	/**
+	 * Affiche une notification à l'utilisateur
+	 * @param {string} message - Message à afficher
+	 */
+	showNotification(message) {
+	    // Vérifier si le conteneur de statut existe
+	    let statusContainer = document.getElementById('status-container');
+	
+	    if (!statusContainer) {
+	        // Créer le conteneur de statut
+	        statusContainer = document.createElement('div');
+	        statusContainer.id = 'status-container';
+	        statusContainer.className = 'status-container';
+		
+	        // Ajouter au corps du document
+	        document.body.appendChild(statusContainer);
+	    }
+	
+	    // Créer le message de statut
+	    const statusMessage = document.createElement('div');
+	    statusMessage.className = 'status-message';
+	    statusMessage.textContent = message;
+	
+	    // Ajouter le message au conteneur
+	    statusContainer.appendChild(statusMessage);
+	
+	    // Supprimer après quelques secondes
+	    setTimeout(() => {
+	        statusMessage.classList.add('fade-out');
+	        setTimeout(() => {
+	            statusMessage.remove();
+			
+	            // Supprimer le conteneur s'il est vide
+	            if (statusContainer.children.length === 0) {
+	                statusContainer.remove();
+	            }
+	        }, 500);
+	    }, 5000);
+	}
     
     /**
      * Affiche une fenêtre modale pour les jets de dés
@@ -274,37 +494,41 @@ class UIManager {
      * Met à jour la liste des joueurs dans l'interface
      */
     updatePlayerList(players) {
-        const playerListElement = document.querySelector('.player-list');
-        const playersHeader = playerListElement.querySelector('h3');
-        
-        // Vider la liste des joueurs tout en gardant le titre
-        playerListElement.innerHTML = '';
-        playerListElement.appendChild(playersHeader);
-        
-        // Ajouter chaque joueur à la liste
-        players.forEach((player, index) => {
-            const playerDiv = document.createElement('div');
-            playerDiv.className = 'player';
-            if (index === this.currentPlayerIndex) {
-                playerDiv.classList.add('active');
-            }
-            
-            playerDiv.addEventListener('click', () => {
-                this.selectPlayer(index);
-            });
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'player-avatar';
-            avatarDiv.textContent = player.avatar;
-            
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'player-name';
-            nameDiv.textContent = player.getDisplayName ? player.getDisplayName() : `${player.name} (${player.character})`;
-            
-            playerDiv.appendChild(avatarDiv);
-            playerDiv.appendChild(nameDiv);
-            
-            playerListElement.appendChild(playerDiv);
-        });
-    }
+		// Chercher l'élément avec la nouvelle structure
+		const playerListElement = document.querySelector('.player-list');
+		
+		if (!playerListElement) {
+			console.error("Élément player-list introuvable");
+			return;
+		}
+		
+		// Vider la liste des joueurs
+		playerListElement.innerHTML = '';
+		
+		// Ajouter chaque joueur à la liste
+		players.forEach((player, index) => {
+			const playerDiv = document.createElement('div');
+			playerDiv.className = 'player';
+			if (index === this.currentPlayerIndex) {
+				playerDiv.classList.add('active');
+			}
+			
+			playerDiv.addEventListener('click', () => {
+				this.selectPlayer(index);
+			});
+			
+			const avatarDiv = document.createElement('div');
+			avatarDiv.className = 'player-avatar';
+			avatarDiv.textContent = player.avatar;
+			
+			const nameDiv = document.createElement('div');
+			nameDiv.className = 'player-name';
+			nameDiv.textContent = player.getDisplayName ? player.getDisplayName() : `${player.name} (${player.character})`;
+			
+			playerDiv.appendChild(avatarDiv);
+			playerDiv.appendChild(nameDiv);
+			
+			playerListElement.appendChild(playerDiv);
+		});
+	}
 }
