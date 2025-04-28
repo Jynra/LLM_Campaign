@@ -542,204 +542,166 @@ header h1 {
 }
   
 @media (max-width: 768px) {
-    /* Réduction des textes en mobile */
-    * {
-        font-size: 0.9rem;
-    }
-    
-    /* Structure de base */
-	body {
-	    display: flex;
-	    flex-direction: column;
-	    height: 100%;
-	    overflow: auto !important; /* Changé de 'hidden' à 'auto' */
+	/* Vos styles existants pour mobile... */
+	
+	/* AJOUTEZ CES NOUVEAUX STYLES ICI */
+	.mobile-only-button {
+		display: block;
+		background: none;
+		border: none;
+		color: white;
+		font-size: 1.2rem;
+		padding: 0.5rem;
+		cursor: pointer;
+		transition: transform 0.3s ease;
 	}
-    
-    header {
-        height: auto;
-        padding: 0.5rem;
-    }
-    
-    header h1 {
-        font-size: 1.6rem;
-    }
-    
-    .container {
-        flex-direction: column;
-        flex: 1;
-    }
-    
-    /* Sidebar */
-    .sidebar {
-        width: 100%;
-        padding: 0.5rem;
-    }
-    
-    /* Section header */
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-    
-    .section-header h3 {
-        font-size: 1rem;
-        margin: 0;
-    }
-    
-    /* Bouton mobile */
-    .mobile-only-button {
-        display: block;
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.1rem;
-        padding: 0.5rem;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
-    
-    /* Panel collapsible */
-    .collapsible-panel {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease;
-    }
-    
-    .collapsible-panel.active {
-        max-height: 500px;
-        overflow-y: auto;
-    }
-    
-    /* Section joueurs */
-    .player-list-section {
-        margin-top: 0.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 0.5rem;
-    }
-    
-    .player-list-section h3 {
-        font-size: 0.85rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Liste de joueurs */
-    .player-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-    
-    .player {
-        width: calc(50% - 0.5rem);
-        margin-bottom: 0.25rem;
-    }
-    
-    /* Conteneur de chat */
-    .chat-container {
-        position: relative;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 60px; /* Espace pour la zone de saisie */
-    }
-    
-    /* En-tête de chat */
-    .chat-header {
-        padding: 0.5rem;
-    }
-    
-    .chat-header h2 {
-        font-size: 1.2rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    /* Barre d'outils */
-    .toolbar {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        padding: 0.25rem 0;
-        margin-top: 0.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .toolbar button {
-        font-size: 1.4rem;
-        padding: 0.5rem 0.75rem;
-        margin: 0;
-    }
-    
-    /* Zone de messages - SOLUTION SCROLL CORRIGÉE */
-	.chat-messages {
-	    position: static !important; /* Revenir à un positionnement normal */
-	    flex: 1;
-	    overflow-y: auto !important; /* Forcer le scroll */
-	    -webkit-overflow-scrolling: touch;
-	    padding: 0.75rem;
-	    height: calc(100vh - 250px); /* Hauteur calculée pour permettre le défilement */
-	    margin-bottom: 60px; /* Espace pour la zone de saisie fixe */
+	
+	/* Style pour le bouton quand le panel est ouvert */
+	.mobile-only-button.active {
+		transform: rotate(180deg);
 	}
-    
-    /* Styles de messages */
-    .message {
-        max-width: 95%;
-    }
-    
-    .message-dm {
-        width: 100%;
-    }
-    
-    /* Zone de saisie */
-    .chat-input {
-        padding: 0.5rem;
-        background-color: #f0f0f0;
-        border-top: 1px solid #ddd;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        display: flex;
-        gap: 0.5rem;
-    }
-    
-    .chat-input input {
-        flex: 1;
-        padding: 0.75rem;
-        font-size: 0.9rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        outline: none;
-    }
-    
-    .chat-input button {
-        padding: 0.75rem 1.2rem;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.9rem;
-    }
-    
-    /* Pour les infos de jeu */
-    .game-selection {
-        margin-bottom: 0.5rem;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    /* Sélecteur de modèles */
-    .model-selector {
-        flex: 1;
-        margin-top: 0.5rem;
-    }
-    
-    /* Bouton de démarrage */
-    .toolbar button#start-button {
-        color: #4caf50;
-        font-size: 1.5rem;
-    }
+	
+	/* Le panneau est masqué par défaut sur mobile */
+	.collapsible-panel {
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.4s ease;
+	}
+	
+	/* Lorsque le panneau est actif */
+	.collapsible-panel.active {
+		max-height: 500px; /* Ajustez selon la hauteur maximale du contenu */
+		overflow-y: auto;
+	}
+	
+	/* Ajustement pour la section joueurs */
+	.player-list-section {
+		margin-top: 1rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		padding-top: 0.5rem;
+	}
+	
+	/* Cacher le titre h3 de Joueurs connectés en mobile si nécessaire */
+	.player-list-section h3 {
+		font-size: 0.9rem;
+		margin-bottom: 0.5rem;
+	}
+  /* Structure globale */
+  .container {
+	  flex-direction: column;
+  }
+  
+  /* En-tête et titre */
+  .chat-header {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  z-index: 5;
+  }
+  
+  .chat-header h2 {
+	  margin-bottom: 0.75rem;
+	  font-size: 1.3rem;
+	  width: 100%;
+  }
+  
+  /* Barre d'outils */
+  .toolbar {
+	  width: 100%;
+	  display: flex;
+	  justify-content: space-between;
+	  padding: 0.25rem 0;
+	  margin-top: 0.5rem;
+	  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .toolbar button {
+	  font-size: 1.5rem;
+	  padding: 0.5rem 0.75rem;
+	  margin: 0;
+  }
+  
+  /* Sidebar en version réduite */
+  .sidebar {
+	  max-height: unset;
+	  width: 100%;
+	  padding: 0.75rem;
+  }
+  
+  /* Pour les infos de jeu en version mobile */
+  .game-selection {
+	  margin-bottom: 0.5rem;
+	  display: flex;
+	  flex-direction: column;
+  }
+  
+  /* Sélecteur de modèles */
+  .model-selector {
+	  flex: 1;
+	  margin-top: 0.5rem;
+  }
+  
+  /* Liste de joueurs en version horizontale */
+  .player-list {
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 0.5rem;
+  }
+  
+  .player {
+	  width: calc(50% - 0.5rem);
+	  margin-bottom: 0.25rem;
+  }
+  
+  .chat-container {
+	  position: relative;
+	  display: flex;
+	  flex-direction: column;
+	  height: calc(100vh - 150px); /* Hauteur ajustable selon votre en-tête */
+	  position: relative;
+  }
+
+  /* Zone de chat */
+  .chat-messages {
+	  flex: 1;
+	  overflow-y: scroll;
+	  padding: 0.75rem;
+	  -webkit-overflow-scrolling: touch; /* Pour une meilleure inertie sur iOS */
+	  position: absolute;
+	  top: 60px; /* Ajustez en fonction de la hauteur de votre chat-header */
+	  bottom: 70px; /* Ajustez en fonction de la hauteur de votre chat-input */
+	  left: 0;
+	  right: 0;
+  }
+  
+  .message {
+	  max-width: 95%;
+  }
+  
+  .message-dm {
+	  width: 100%;
+  }
+  
+  /* Zone de saisie */
+  .chat-input {
+	  position: absolute;
+	  bottom: 0;
+	  left: 0;
+	  right: 0;
+	  padding: 10px;
+	  background-color: #f0f0f0;
+	  border-top: 1px solid #ddd;
+	  z-index: 5;
+  }
+  
+  .chat-input input {
+	  padding: 0.75rem;
+  }
+  
+  /* Ajustements pour les boutons du header */
+  .toolbar button#start-button {
+	  color: #4caf50;
+	  font-size: 1.6rem;
+  }
 }
